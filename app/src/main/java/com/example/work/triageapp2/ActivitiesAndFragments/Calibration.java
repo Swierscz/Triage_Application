@@ -1,22 +1,16 @@
 package com.example.work.triageapp2.ActivitiesAndFragments;
 
-import android.Manifest;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,7 +42,7 @@ public class Calibration extends Fragment implements OnBackPressedListener{
 //    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 101;
 //    private static final int REQUEST_PAIR_DEVICE = 102 ;
 //    private static final int REQUEST_ENABLE_BT = 103;
-
+    Connection connection;
     PairedDevicesThread pairedDevicesThread;
 
 
@@ -56,7 +50,6 @@ public class Calibration extends Fragment implements OnBackPressedListener{
 
 
     private ListView listOfDevices;
-    private ArrayList<Device> deviceList = new ArrayList<Device>();
     private ArrayAdapter<String> adapter;
 
     //region _____receiver_____
@@ -68,11 +61,11 @@ public class Calibration extends Fragment implements OnBackPressedListener{
 
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 Log.i(TAG, device.getName() + "    Bluetooth Device Connected");
-                for (Device dC : deviceList) {
+                for (Device dC : connection.listOfPairedDevices) {
 
                     if (device.getName().equals(dC.deviceName) && device.getAddress().equals(dC.deviceAddress)) {
                         dC.setConnected(true);
-                        setListAdapter(deviceList);
+                        setListAdapter(connection.listOfPairedDevices);
                     }
                 }
 
@@ -80,10 +73,10 @@ public class Calibration extends Fragment implements OnBackPressedListener{
             }
             if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 Log.i(TAG, device.getName() + "    Bluetooth Device Disconnected");
-                for (Device dC : deviceList) {
+                for (Device dC : connection.listOfPairedDevices) {
                     if (device.getName().equals(dC.deviceName) && device.getAddress().equals(dC.deviceAddress)) {
                         dC.setConnected(false);
-                        setListAdapter(deviceList);
+                        setListAdapter(connection.listOfPairedDevices);
                     }
 
                 }
@@ -98,10 +91,10 @@ public class Calibration extends Fragment implements OnBackPressedListener{
             if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
                         == BluetoothAdapter.STATE_OFF) {
-                    for (Device dCC : deviceList) {
+                    for (Device dCC : connection.listOfPairedDevices) {
                         dCC.setConnected(false);
                     }
-                    setListAdapter(deviceList);
+                    setListAdapter(connection.listOfPairedDevices);
                 }
             }
 
@@ -110,7 +103,6 @@ public class Calibration extends Fragment implements OnBackPressedListener{
 //endregion
 
     public Calibration(){
-
 
     }
 
@@ -127,52 +119,16 @@ public class Calibration extends Fragment implements OnBackPressedListener{
         Log.i(TAG,"Constructor");
         ((MainActivity)getActivity()).setFragmentWorking(true);
 
+        connection = ((MainActivity)getActivity()).getConnection();
+
         //region COMPONENTS
         listOfDevices = (ListView) getActivity().findViewById(R.id.bluetoothDevicesList);
         //endregion
         // region SETTINGS
         setHasOptionsMenu(true);
         //endregion
-        //region PERMISSIONS
-        int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.WRITE_CALENDAR);
-        Log.e(TAG, "Permission Status: " + permissionCheck);
 
-        if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        getActivity().getResources().getInteger(R.integer.MY_PERMISSIONS_REQUEST_LOCATION));
-            }
-        }
-        //endregion
-
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) getContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-
-        if(mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()){
-            Intent enableBtIntent = new Intent((BluetoothAdapter.ACTION_REQUEST_ENABLE));
-            startActivityForResult(enableBtIntent,getActivity().getResources().getInteger(R.integer.REQUEST_ENABLE_BT));
-            Log.i(TAG,"request enable bluetooth has started");
-        }else{
-            refreshDeviceListViewAndSetListener();
-        }
-
+        refreshDeviceListViewAndSetListener();
         createIntentFilter();
 
     }
@@ -233,6 +189,7 @@ public class Calibration extends Fragment implements OnBackPressedListener{
             thread.start();
             refreshDeviceListViewAndSetListener();
         }
+
         if(requestCode == getActivity().getResources().getInteger(R.integer.REQUEST_ENABLE_BT)){
             Log.i(TAG,"enable bluetooth request has been received");
             if(resultCode == RESULT_OK)
@@ -242,10 +199,10 @@ public class Calibration extends Fragment implements OnBackPressedListener{
 
 
     public void refreshDeviceListViewAndSetListener(){
-        Log.i(TAG,"refreshDeviceListViewAndSetListener function has started");
-        deviceList = fillDeviceList(mBluetoothAdapter);
+        Log.i(TAG,"refreshconnection.listOfPairedDevicesViewAndSetListener function has started");
+        connection.listOfPairedDevices = connection.fillAndReturnPairedDeviceList();
 
-        setListAdapter(deviceList);
+        setListAdapter(connection.listOfPairedDevices);
 
         listOfDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -267,7 +224,7 @@ public class Calibration extends Fragment implements OnBackPressedListener{
     }
 
     public ArrayList<Device> fillDeviceList(BluetoothAdapter mBluetoothAdapter){
-        Log.i(TAG,"fillDeviceList function has started");
+        Log.i(TAG,"fillAndReturnPairedconnection.listOfPairedDevices function has started");
         ArrayList<Device> tempArrayList = new ArrayList<Device>();
         pairedDevicesThread = new PairedDevicesThread(mBluetoothAdapter);
         pairedDevicesThread.start();
@@ -281,9 +238,10 @@ public class Calibration extends Fragment implements OnBackPressedListener{
 
     public void startSensorWorkOnItemClick(int i){
 
-        for(Device dC : deviceList){
+        for(Device dC : connection.listOfPairedDevices){
             if(listOfDevices.getItemAtPosition(i).equals(dC)){
                 checkDeviceKindAndLaunchResponsibleThread(dC);
+                Log.i(TAG,dC.deviceAddress);
             }
         }
     }

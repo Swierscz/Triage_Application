@@ -1,16 +1,23 @@
 package com.example.work.triageapp2.ActivitiesAndFragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,15 +42,22 @@ public class MainActivity extends AppCompatActivity
 
     final static String TAG = MainActivity.class.getSimpleName();
 
+
+
+    Connection connection;
+    ManualAssesment manualAssesment;
+
     NavigationView navigationView;
     MainActivityDrawingView view;
     ImageView disableBluetoothIcon;
     Toolbar toolbar;
+
     Receiver receiver;
     DBAdapter dbAdapter;
-    DeviceConnectionClock deviceConnectionClock;
-    ManualAssesment manualAssesment;
 
+    DeviceConnectionClock deviceConnectionClock;
+
+    BluetoothAdapter mBluetoothAdapter;
     BluetoothLeService mBluetoothLeService;
     ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     BluetoothGattCharacteristic mNotifyCharacteristic;
@@ -72,7 +86,6 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
-
     private void initViews(){
         view = (MainActivityDrawingView) findViewById(R.id.mainActivityDrawingViewId);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -89,7 +102,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-
     //region _____on* Methods_____
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,12 +109,29 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         initViews();
         setBluetoothIconVisibility();
+        setPermissionForBlueetoothUse();
+
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+
+        if(mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()){
+            Intent enableBtIntent = new Intent((BluetoothAdapter.ACTION_REQUEST_ENABLE));
+            startActivityForResult(enableBtIntent,((MainActivity)this).getResources().getInteger(R.integer.REQUEST_ENABLE_BT));
+            Log.i(TAG,"request enable bluetooth has started");
+        }
+
         deviceConnectionClock = new DeviceConnectionClock();
         deviceConnectionClock.start();
         receiver = new Receiver(this);
         receiver.registerReceivers();
         dbAdapter = new DBAdapter(getApplicationContext());
         dbAdapter.open();
+
+        connection = new Connection(this, mBluetoothAdapter);
+
+
+
     }
     @Override
     protected void onResume() {
@@ -228,6 +257,35 @@ public class MainActivity extends AppCompatActivity
 
 
     //region _____bluetooth code_____
+
+    private void setPermissionForBlueetoothUse() {
+        int permissionCheck = ContextCompat.checkSelfPermission((MainActivity) this,
+                Manifest.permission.WRITE_CALENDAR);
+        Log.e(TAG, "Permission Status: " + permissionCheck);
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale((MainActivity) this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions((MainActivity) this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        ((MainActivity) this).getResources().getInteger(R.integer.MY_PERMISSIONS_REQUEST_LOCATION));
+            }
+        }
+    }
+
     public boolean isBluetoothEnabled()
     {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -317,5 +375,9 @@ public class MainActivity extends AppCompatActivity
 
     public void setFragmentWorking(boolean fragmentWorking) {
         isFragmentWorking = fragmentWorking;
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 }
