@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_login"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Logowanie" />
+        <item
+            android:id="@+id/nav_calibration"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Kalibracja" />
+        <item
+            android:id="@+id/nav_assesment"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Ocena przytomności" />
+        <item
+            android:id="@+id/nav_alarm"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Alarm" />
+    </group>
+
+
+
+</menu>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="MY_PERMISSIONS_REQUEST_LOCATION">101</integer>
+    <integer name="REQUEST_BLUETOOTH_SETTINGS">102</integer>
+    <integer name="REQUEST_ENABLE_BT">103</integer>
+    <integer name="REQUEST_SURFACE_CREATED">104</integer>
+
+</resources>

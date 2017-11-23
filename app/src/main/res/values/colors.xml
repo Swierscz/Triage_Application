@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorRed">#954535</color>
+    <color name="colorKhaki">#bcce62</color>
+    <color name="darkKhakiColor">#194D1E</color>
+    <color name="t1Color">#691a1d</color>
+    <color name="t2Color">#956c1d</color>
+    <color name="t3Color">#304319</color>
+    <color name="t4Color">#000000</color>
+</resources>
