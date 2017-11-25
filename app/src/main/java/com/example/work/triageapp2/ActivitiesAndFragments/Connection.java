@@ -23,6 +23,7 @@ public class Connection {
     BluetoothAdapter mBluetoothAdapter;
 
     public ArrayList<Device> listOfPairedDevices = new ArrayList<Device>();
+    public ArrayList<Device> listOfConnectedDevices = new ArrayList<Device>();
 
     public Connection(MainActivity mainActivity, BluetoothAdapter mBluetoothAdapter){
         this.mainActivity = mainActivity;
@@ -45,7 +46,33 @@ public class Connection {
         while(!pairedDevicesThread.isDone()) {
             tempArrayList = pairedDevicesThread.getDeviceList();
         }
+
+        for(Device dC : tempArrayList){
+            for(Device dC2 : listOfConnectedDevices){
+                if(compareDeviceAttributes(dC,dC2)){
+                    dC.setConnected(true);
+                }
+            }
+        }
+
+
         return tempArrayList;
+    }
+
+    public boolean compareDeviceAttributes(Device dC,Device dC2){
+        if(dC.deviceName.equals(dC2.deviceName) && dC.deviceAddress.equals(dC2.deviceAddress)){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isDeviceConnected(Device device){
+        for(Device dC : listOfConnectedDevices){
+            if(compareDeviceAttributes(dC,device)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void connectToSoldierDevices(){

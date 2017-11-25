@@ -68,6 +68,10 @@ public class MainActivity extends AppCompatActivity
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
+    public ServiceConnection getmServiceConnection() {
+        return mServiceConnection;
+    }
+
     public final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -379,5 +383,9 @@ public class MainActivity extends AppCompatActivity
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public void unbindCurrentService(){
+        unbindService(mServiceConnection);
     }
 }
