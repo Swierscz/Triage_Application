@@ -30,6 +30,8 @@ import android.widget.ImageView;
 
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.Bluetooth.Ble.SampleGattAttributes;
+import com.example.work.triageapp2.Bluetooth.Connection;
+import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.DeviceConnectionClock;
 import com.example.work.triageapp2.Database.DBAdapter;
 import com.example.work.triageapp2.R;
 import com.example.work.triageapp2.AppGraphic.MainActivityDrawingView;
@@ -57,12 +59,12 @@ public class MainActivity extends AppCompatActivity
 
     DeviceConnectionClock deviceConnectionClock;
 
-    BluetoothAdapter mBluetoothAdapter;
+    public BluetoothAdapter mBluetoothAdapter;
     BluetoothLeService mBluetoothLeService;
     ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     BluetoothGattCharacteristic mNotifyCharacteristic;
 
-    String mDeviceAddress;
+    public String mDeviceAddress;
     boolean isFragmentWorking, isSurfaceCreated, isGattConnected;
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";

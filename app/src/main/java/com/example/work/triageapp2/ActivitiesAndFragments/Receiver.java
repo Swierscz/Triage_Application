@@ -25,6 +25,8 @@ public class Receiver {
         this.mainActivity = mainActivity;
     }
 
+
+
     private final BroadcastReceiver bluetoothStateChangeReceiver = new BroadcastReceiver() {
         public void onReceive (Context context, Intent intent) {
             String action = intent.getAction();
@@ -42,6 +44,7 @@ public class Receiver {
     };
 
 
+
     private final BroadcastReceiver deviceConnectionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -50,7 +53,7 @@ public class Receiver {
 
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 Log.i(TAG, device.getName() + "    Bluetooth Device Connected");
-                for (Device dC : mainActivity.connection.listOfPairedDevices) {
+                for (Device dC : mainActivity.connection.listOfDevices) {
 
                     if (device.getName().equals(dC.deviceName) && device.getAddress().equals(dC.deviceAddress)) {
                         mainActivity.connection.listOfConnectedDevices.add(dC);
@@ -114,7 +117,7 @@ public class Receiver {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("BLE_DEVICE_NAME_AND_ADDRESS");
         return  intentFilter;
-    };
+    }
 
     private IntentFilter createIntentFilterForSurfaceCreationReceiver(){
         IntentFilter intentFilter = new IntentFilter();

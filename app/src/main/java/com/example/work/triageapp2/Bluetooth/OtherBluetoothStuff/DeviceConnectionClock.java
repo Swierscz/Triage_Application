@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.ActivitiesAndFragments;
+package com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff;
 
 import com.example.work.triageapp2.SoldierParameter;
 

@@ -33,7 +33,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.example.work.triageapp2.ActivitiesAndFragments.DeviceConnectionClock;
+import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.DeviceConnectionClock;
 import com.example.work.triageapp2.ActivitiesAndFragments.ManualAssesment;
 import com.example.work.triageapp2.Database.DBAdapter;
 import com.example.work.triageapp2.SoldierParameter;
