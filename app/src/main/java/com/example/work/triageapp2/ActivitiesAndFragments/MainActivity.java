@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
@@ -47,15 +48,18 @@ public class MainActivity extends AppCompatActivity
 
 
     Connection connection;
-    ManualAssesment manualAssesment;
+    EmgFragment emgFragment = null;
+
 
     NavigationView navigationView;
     MainActivityDrawingView view;
     ImageView disableBluetoothIcon;
     Toolbar toolbar;
+    Button emgButton;
 
     Receiver receiver;
     DBAdapter dbAdapter;
+    ArrayList<Float> plotList = new ArrayList<Float>();
 
     DeviceConnectionClock deviceConnectionClock;
 
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+            mBluetoothLeService.setMainActivityReference(MainActivity.this);
             if (!mBluetoothLeService.initialize()) {
                 Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
@@ -127,6 +132,23 @@ public class MainActivity extends AppCompatActivity
             Log.i(TAG,"request enable bluetooth has started");
         }
 
+        emgButton = (Button) findViewById(R.id.emgButton);
+        emgButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onClick(View v) {
+                if (getSupportFragmentManager().getFragments().size() != 0) {
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+                setBackgroundComponentVisibility(false);
+                view.setIsTriageScreenVisible(false);
+                emgFragment = new EmgFragment();
+                replaceFragment(emgFragment, "EMG_FRAGMENT");
+            }
+        });
+
+        Log.i(TAG,"dupadupa");
+
         deviceConnectionClock = new DeviceConnectionClock();
         deviceConnectionClock.start();
         receiver = new Receiver(this);
@@ -137,12 +159,12 @@ public class MainActivity extends AppCompatActivity
         connection = new Connection(this, mBluetoothAdapter);
 
 
-
     }
     @Override
     protected void onResume() {
         Log.i(TAG,"onResume");
         super.onResume();
+        setBackgroundComponentVisibility(true);
         dbAdapter.open();
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
@@ -203,6 +225,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+//    @SuppressLint("RestrictedApi")
     @SuppressLint("RestrictedApi")
     private void displaySelectedScreen(int id) {
         Fragment fragment = null;
@@ -211,28 +234,27 @@ public class MainActivity extends AppCompatActivity
                 if (getSupportFragmentManager().getFragments().size() != 0) {
                     getSupportFragmentManager().popBackStackImmediate();
                 }
+                setBackgroundComponentVisibility(false);
                 view.setIsTriageScreenVisible(false);
+
                 fragment = new Calibration();
                 replaceFragment(fragment, "CALIBRATION_FRAGMENT");
                 break;
             case R.id.nav_assesment:
-                if (getSupportFragmentManager().getFragments().size() != 0) {
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-                view.setIsTriageScreenVisible(false);
-                manualAssesment = new ManualAssesment();
-                mBluetoothLeService.setManualAssesment(manualAssesment);
-                fragment = manualAssesment;
-                replaceFragment(fragment, "MANUAL_ASSESSMENT_FRAGMENT");
+                new ManualAssesment(MainActivity.this);
                 break;
+
             case R.id.nav_alarm:
                 new SoldierAlarm(getApplicationContext());
                 break;
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }
+
+
 
     public void replaceFragment(Fragment fragment,String tag){
         if(fragment != null){
@@ -364,8 +386,42 @@ public class MainActivity extends AppCompatActivity
     //endregion
 
 
+    public void setEmgFragmentToNull(){
+        emgFragment = null;
+    }
 
-    public void setIfItIsTriageScreen(boolean b){   view.setIsTriageScreenVisible(b);    }
+    public EmgFragment getEmgFragment(){
+        return emgFragment;
+    }
+
+    public void fillPlotValues(float f1){
+        if(plotList.size()<50)
+            plotList.add(f1);
+        else {
+            plotList.remove(0);
+            plotList.add(f1);
+        }
+    }
+
+    public ArrayList<Float> getPlotList(){
+        return plotList;
+    }
+
+    public void setBackgroundComponentVisibility(boolean visible){
+        if(emgButton!=null){
+            Log.i(TAG,"KIRDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaE");
+            if(visible==true)
+
+                emgButton.setVisibility(View.VISIBLE);
+            else
+                emgButton.setVisibility(View.GONE);
+        }
+    }
+
+    public void setIfItIsTriageScreen(boolean b){
+            view.setIsTriageScreenVisible(b);
+            setBackgroundComponentVisibility(b);
+    }
 
     public boolean isSurfaceCreated() {
         return isSurfaceCreated;

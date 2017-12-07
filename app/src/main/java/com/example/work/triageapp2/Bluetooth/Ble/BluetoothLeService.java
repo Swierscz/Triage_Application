@@ -33,8 +33,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.work.triageapp2.ActivitiesAndFragments.MainActivity;
 import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.DeviceConnectionClock;
-import com.example.work.triageapp2.ActivitiesAndFragments.ManualAssesment;
 import com.example.work.triageapp2.Database.DBAdapter;
 import com.example.work.triageapp2.SoldierParameter;
 
@@ -60,11 +60,10 @@ public class BluetoothLeService extends IntentService {
 
     private DBAdapter dbAdapter;
 
-    public void setManualAssesment(ManualAssesment manualAssesment) {
-        this.manualAssesment = manualAssesment;
+    MainActivity mainActivity;
+    public void setMainActivityReference(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
-
-    ManualAssesment manualAssesment;
 
     private int mConnectionState = STATE_DISCONNECTED;
 
@@ -191,15 +190,16 @@ public class BluetoothLeService extends IntentService {
             } else {
                 format = BluetoothGattCharacteristic.FORMAT_UINT8;
             }
-            final int heartRate = characteristic.getIntValue(format, 1);
-            Log.i(TAG,"Muscle measured value is: " +  String.valueOf(heartRate));
+            final int muscleRate = characteristic.getIntValue(format, 1);
+            Log.i(TAG,"Muscle measured value is: " +  String.valueOf(muscleRate));
 //            addEmgToDatabase(f1,200);
 //            final Intent intent2 = new Intent("EMG_RECEIVED");
 //            getApplicationContext().sendBroadcast(intent2);
 
-
-            if(manualAssesment!=null)
-            manualAssesment.updatePlot(heartRate);
+            mainActivity.fillPlotValues(muscleRate);
+            if(mainActivity.getEmgFragment()!=null){
+                mainActivity.getEmgFragment().refreshPlot();
+            }
         }
         else
         {
