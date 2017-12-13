@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@drawable/main_gradient"
     tools:context="com.example.work.triageapp2.ActivitiesAndFragments.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
@@ -25,9 +26,18 @@
         <com.example.work.triageapp2.AppGraphic.MainActivityDrawingView
             android:id="@+id/mainActivityDrawingViewId"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="200dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.example.work.triageapp2.AppGraphic.MainActivityDrawingView2
+            android:id="@+id/mainActivityDrawingViewId2"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainActivityDrawingViewId" />
+
 
         <Button
             android:id="@+id/emgButton"

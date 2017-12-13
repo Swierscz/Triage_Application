@@ -2,10 +2,14 @@ package com.example.work.triageapp2.AppGraphic;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.example.work.triageapp2.R;
 
 /**
  * Created by BoryS on 09.10.2017.
@@ -41,7 +45,7 @@ public class MainActivityDrawingView extends SurfaceView implements SurfaceHolde
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
        // Log.i(this.getClass().getName(),"surfaceCreated function has been called");
-        animThread = new AnimThread(getContext(), holder, this.getWidth(), this.getHeight());
+        animThread = new AnimThread(getContext(), this,holder, this.getWidth(), this.getHeight());
         animThread.setRunning(true);
         animThread.start();
 

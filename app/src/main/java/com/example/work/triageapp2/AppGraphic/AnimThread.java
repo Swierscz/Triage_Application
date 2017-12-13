@@ -1,13 +1,20 @@
 package com.example.work.triageapp2.AppGraphic;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
 
 import com.example.work.triageapp2.R;
 import com.example.work.triageapp2.SoldierParameter;
@@ -21,6 +28,7 @@ public class AnimThread extends Thread {
     private int width, height;
 
     private SurfaceHolder holder;
+    private SurfaceView surfaceView;
     private Context context;
     private Paint stringPaint,linePaint, t1Paint, blackStringPaint;
     TimerThreadForHeartRate timerThreadForHeartRate;
@@ -36,7 +44,8 @@ public class AnimThread extends Thread {
     int backgroundColor,darkKhakiColor,t1Color;
 
 
-    public AnimThread(Context context, SurfaceHolder holder, int width, int height){
+    public AnimThread(Context context, SurfaceView surfaceView, SurfaceHolder holder, int width, int height){
+        this.surfaceView = surfaceView;
         this.holder = holder;
         this.context = context;
         this.width = width;
@@ -75,11 +84,15 @@ public class AnimThread extends Thread {
 
         while(running){
             Canvas canvas = null;
+
             try{
+
                 canvas = holder.lockCanvas();
                 if(canvas != null) {
                     synchronized (holder) {
                         if (isTriageScreenVisible == true) {
+                            if(surfaceView.getVisibility() == View.GONE)
+                                 surfaceView.setVisibility(View.VISIBLE);
                             canvas.drawColor(backgroundColor);
 
                             canvas.drawRect(0, 0, width, 380, t1Paint);
@@ -92,6 +105,10 @@ public class AnimThread extends Thread {
 
                         } else {
                             canvas.drawColor(backgroundColor);
+                            if(surfaceView.getVisibility() == View.VISIBLE)
+                            surfaceView.setVisibility(View.GONE);
+//                            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+
                         }
 
                     }
