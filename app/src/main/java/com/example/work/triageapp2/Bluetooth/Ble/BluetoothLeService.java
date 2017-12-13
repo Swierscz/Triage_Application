@@ -178,8 +178,8 @@ public class BluetoothLeService extends IntentService {
             SoldierParameter.heartRate = heartRate;
             Log.i(TAG,"heartRate is: " + String.valueOf(heartRate) );
             DeviceConnectionClock.resetTimerForHeartRate();
-            if(SoldierParameter.isHeartRateDeviceConnected == false)
-                SoldierParameter.isHeartRateDeviceConnected = true;
+            if(SoldierParameter.isHeartRateActive == false)
+                SoldierParameter.isHeartRateActive = true;
         }
         else if(UUID_MYOWARE_MUSCLE_MEASURMENT.equals(characteristic.getUuid())){
 //            float f1 = formatIncomingDataForMuscleDevice(characteristic);

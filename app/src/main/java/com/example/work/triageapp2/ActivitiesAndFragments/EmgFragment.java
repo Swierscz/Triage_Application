@@ -5,13 +5,24 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.androidplot.Plot;
+import com.androidplot.ui.HorizontalPositioning;
+import com.androidplot.ui.Size;
+import com.androidplot.ui.SizeMetric;
+import com.androidplot.ui.SizeMode;
+import com.androidplot.ui.VerticalPositioning;
+import com.androidplot.ui.widget.Widget;
+import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.AdvancedLineAndPointRenderer;
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.StepMode;
+import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.example.work.triageapp2.R;
@@ -55,15 +66,25 @@ public class EmgFragment extends Fragment implements OnBackPressedListener {
 
     public void initPlot(){
         plot = (XYPlot)getActivity().findViewById(R.id.plot);
-        Number[] series1Numbers = {1, 4, 2, 8, 4, 16, 8, 32, 16, 64};
-
 
         MyFadeFormatter formatter =new MyFadeFormatter(2000);
         formatter.setLegendIconEnabled(false);
-        plot.setRangeBoundaries(0, 1000, BoundaryMode.FIXED);
-        plot.setDomainBoundaries(0, 50, BoundaryMode.FIXED);
+
+        plot.setPadding(0,0,0,0);
+        plot.setPlotMargins(0,0,0,0);
+
+//        plot.getGraph().setSize(new Size);
+        plot.getGraph().setSize(new Size(
+                -10, SizeMode.FILL,
+                10, SizeMode.FILL));
+        plot.getGraph().position(10,HorizontalPositioning.ABSOLUTE_FROM_LEFT,35,VerticalPositioning.ABSOLUTE_FROM_TOP);
+
+        plot.setRangeBoundaries(0, 400, BoundaryMode.FIXED);
+        plot.setDomainBoundaries(0, MainActivity.PLOT_SIZE, BoundaryMode.FIXED);
+        plot.setDomainStep(StepMode.INCREMENT_BY_VAL,100);
+        plot.setRangeStepValue(9);
         // reduce the number of range labels
-        plot.setLinesPerRangeLabel(3);
+//        plot.setLinesPerRangeLabel(3);
     }
 
     public static <T> List<T> rotate(List<T> aL, int shift) {

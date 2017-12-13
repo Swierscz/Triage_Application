@@ -19,12 +19,12 @@ public class DeviceConnectionClock extends Thread {
     public void run() {
 
         while(true){
-            if(SoldierParameter.isHeartRateDeviceConnected)
+            if(SoldierParameter.isHeartRateActive)
                 heartRateConnectionTimeInSeconds ++;
 
 
             if(heartRateConnectionTimeInSeconds == 20){
-                SoldierParameter.isHeartRateDeviceConnected = false;
+                SoldierParameter.isHeartRateActive = false;
                 SoldierParameter.heartRate = 0;
             }
 

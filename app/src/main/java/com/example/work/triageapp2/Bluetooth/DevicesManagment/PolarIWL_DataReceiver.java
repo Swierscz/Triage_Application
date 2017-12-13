@@ -3,6 +3,9 @@ package com.example.work.triageapp2.Bluetooth.DevicesManagment;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.DeviceConnectionClock;
+import com.example.work.triageapp2.SoldierParameter;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -38,6 +41,7 @@ public class PolarIWL_DataReceiver extends Thread {
             try {
 
                 //===================================================
+
                 numBytes = mmInStream.read(mmBuffer);
 
                 final StringBuilder sb = new StringBuilder();
@@ -51,6 +55,17 @@ public class PolarIWL_DataReceiver extends Thread {
                     sb.append(Integer.toHexString(((int) mmBuffer[4] * 2) & 0xff)).append(", ");
                     Log.v("Tetno: ", "" + mmBuffer[4]);
                     Log.v("result", sb.toString());
+
+
+                    SoldierParameter.heartRate = mmBuffer[4];
+                    if(String.valueOf(mmBuffer[4]).equals("0")){
+                        SoldierParameter.isHeartRateActive = false;
+                    }
+                    else{
+                        DeviceConnectionClock.resetTimerForHeartRate();
+                        if(SoldierParameter.isHeartRateActive == false)
+                            SoldierParameter.isHeartRateActive = true;
+                    }
                 }
                 //  }
             } catch (IOException e) {

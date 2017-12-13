@@ -108,7 +108,7 @@ public class AnimThread extends Thread {
 
 
     public void drawHeart(Canvas canvas){
-        if(SoldierParameter.isHeartRateDeviceConnected){
+        if(SoldierParameter.isHeartRateActive){
             if(isHeartShouldBeDrawn()) {
                 Drawable d = context.getResources().getDrawable(R.drawable.green_heart2);
                 setDrawableBounds(d, 50, 400, 150, 150);

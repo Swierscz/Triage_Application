@@ -7,7 +7,7 @@ package com.example.work.triageapp2;
 public class SoldierParameter {
 
     public static int heartRate = 0;
-    public static boolean isHeartRateDeviceConnected = false;
+    public static boolean isHeartRateActive = false;
 
     private SoldierParameter(){
 

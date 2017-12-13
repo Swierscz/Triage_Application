@@ -45,15 +45,11 @@ public class MainActivity extends AppCompatActivity
 
     final static String TAG = MainActivity.class.getSimpleName();
 
-
-
     Connection connection;
-    EmgFragment emgFragment = null;
-
-
     NavigationView navigationView;
     MainActivityDrawingView view;
     ImageView disableBluetoothIcon;
+    EmgFragment emgFragment = null;
     Toolbar toolbar;
     Button emgButton;
 
@@ -70,6 +66,8 @@ public class MainActivity extends AppCompatActivity
 
     public String mDeviceAddress;
     boolean isFragmentWorking, isSurfaceCreated, isGattConnected;
+
+    public static final int PLOT_SIZE = 300;
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
@@ -97,6 +95,7 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    //region _____init_____
     private void initViews(){
         view = (MainActivityDrawingView) findViewById(R.id.mainActivityDrawingViewId);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -112,16 +111,9 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-
-    //region _____on* Methods_____
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initViews();
+    private void initBluetooth(){
         setBluetoothIconVisibility();
         setPermissionForBlueetoothUse();
-
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
@@ -131,7 +123,8 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(enableBtIntent,((MainActivity)this).getResources().getInteger(R.integer.REQUEST_ENABLE_BT));
             Log.i(TAG,"request enable bluetooth has started");
         }
-
+    }
+    private void initAndHandleEmgButton(){
         emgButton = (Button) findViewById(R.id.emgButton);
         emgButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
@@ -146,18 +139,34 @@ public class MainActivity extends AppCompatActivity
                 replaceFragment(emgFragment, "EMG_FRAGMENT");
             }
         });
-
-        Log.i(TAG,"dupadupa");
-
+    }
+    private void initDeviceClockAndReceivers(){
         deviceConnectionClock = new DeviceConnectionClock();
         deviceConnectionClock.start();
         receiver = new Receiver(this);
         receiver.registerReceivers();
+    }
+    private void initDataBase(){
         dbAdapter = new DBAdapter(getApplicationContext());
         dbAdapter.open();
-
+    }
+    private void initObjects(){
         connection = new Connection(this, mBluetoothAdapter);
+    }
+    //endregion
 
+    //region _____on* Methods_____
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        initViews();
+        initBluetooth();
+        initAndHandleEmgButton();
+        initDeviceClockAndReceivers();
+        initDataBase();
+        initObjects();
 
     }
     @Override
@@ -180,6 +189,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {Log.i(TAG,"onBackPressed");
+        manageDrawerBehaviourAndOnBackPressedFunctionForFragments();
+    }
+
+    public void manageDrawerBehaviourAndOnBackPressedFunctionForFragments(){
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -189,16 +202,6 @@ public class MainActivity extends AppCompatActivity
             callOnBackPressedOnEachFragment();
         }
     }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        receiver.unregisterReceivers();
-        unbindService(mServiceConnection);
-        DBAdapter.deleteDataBase(getApplicationContext());
-    }
-
     private void callOnBackPressedOnEachFragment(){
         @SuppressLint("RestrictedApi") List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
         if (fragmentList != null) {
@@ -211,8 +214,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    //endregion
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        receiver.unregisterReceivers();
+        unbindService(mServiceConnection);
+        DBAdapter.deleteDataBase(getApplicationContext());
+    }
+
+    //endregion
 
     //region _____menu and fragments code_____
 
@@ -283,7 +294,6 @@ public class MainActivity extends AppCompatActivity
 
 //endregion
 
-
     //region _____bluetooth code_____
 
     private void setPermissionForBlueetoothUse() {
@@ -314,14 +324,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public boolean isBluetoothEnabled()
-    {
+    public boolean isBluetoothEnabled() {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         return mBluetoothAdapter.isEnabled();
     }
-    // Demonstrates how to iterate through the supported GATT Services/Characteristics.
-    // In this sample, we populate the data structure that is bound to the ExpandableListView
-    // on the UI.
+
     public void displayGattServices(List<BluetoothGattService> gattServices) {
    //     Log.i(TAG,"displayGattServices");
         if (gattServices == null) return;
@@ -385,7 +392,7 @@ public class MainActivity extends AppCompatActivity
 
     //endregion
 
-
+    //region _____emg handle_____
     public void setEmgFragmentToNull(){
         emgFragment = null;
     }
@@ -395,7 +402,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void fillPlotValues(float f1){
-        if(plotList.size()<50)
+        if(plotList.size()<PLOT_SIZE)
             plotList.add(f1);
         else {
             plotList.remove(0);
@@ -406,18 +413,17 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<Float> getPlotList(){
         return plotList;
     }
+    //endregion
 
+    //region _____activity and fragments handle_____
     public void setBackgroundComponentVisibility(boolean visible){
         if(emgButton!=null){
-            Log.i(TAG,"KIRDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaE");
             if(visible==true)
-
                 emgButton.setVisibility(View.VISIBLE);
             else
                 emgButton.setVisibility(View.GONE);
         }
     }
-
     public void setIfItIsTriageScreen(boolean b){
             view.setIsTriageScreenVisible(b);
             setBackgroundComponentVisibility(b);
@@ -426,23 +432,21 @@ public class MainActivity extends AppCompatActivity
     public boolean isSurfaceCreated() {
         return isSurfaceCreated;
     }
-
     public void setSurfaceCreated(boolean surfaceCreated) {
         isSurfaceCreated = surfaceCreated;
     }
-
     public boolean isFragmentWorking() {
         return isFragmentWorking;
     }
-
     public void setFragmentWorking(boolean fragmentWorking) {
         isFragmentWorking = fragmentWorking;
     }
+    //endregion
+
 
     public Connection getConnection() {
         return connection;
     }
-
     public void unbindCurrentService(){
         unbindService(mServiceConnection);
     }

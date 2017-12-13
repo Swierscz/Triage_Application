@@ -48,22 +48,23 @@ public class Connection {
                 String action = intent.getAction();
 
                 //Finding devices
-                if (BluetoothDevice.ACTION_FOUND.equals(action))
-                {
+                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                     // Get the BluetoothDevice object from the Intent
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     String deviceName = device.getName();
                     String deviceHardwareAddress = device.getAddress(); // MAC address
-                    Log.i(TAG,deviceName);
-                    if(device.getType() == device.DEVICE_TYPE_CLASSIC)
-                        listOfDevices.add(new Device(deviceName,deviceHardwareAddress,"CLASSIC"));
-                    else if(device.getType() == device.DEVICE_TYPE_DUAL)
-                        listOfDevices.add(new Device(deviceName,deviceHardwareAddress,"DUAL"));
-                    else if(device.getType() == device.DEVICE_TYPE_LE)
-                        listOfDevices.add(new Device(deviceName,deviceHardwareAddress,"LE"));
-                    else
-                        listOfDevices.add(new Device(deviceName,deviceHardwareAddress,"UNKNOWN"));
-
+                    if (device.getType() == device.DEVICE_TYPE_CLASSIC) {
+                    listOfDevices.add(new Device(deviceName, deviceHardwareAddress, "CLASSIC"));
+                    }
+                    else if(device.getType() == device.DEVICE_TYPE_DUAL) {
+                        listOfDevices.add(new Device(deviceName, deviceHardwareAddress, "DUAL"));
+                    }
+                    else if(device.getType() == device.DEVICE_TYPE_LE) {
+                        listOfDevices.add(new Device(deviceName, deviceHardwareAddress, "LE"));
+                    }
+                    else {
+                        listOfDevices.add(new Device(deviceName, deviceHardwareAddress, "UNKNOWN"));
+                    }
                 }
 
                 if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
@@ -100,11 +101,25 @@ public class Connection {
     }
 
     public void connectToSoldierDevices(){
+        Log.i(TAG,"iWL dupa");
         for(Device dC : listOfDevices){
+            Log.i(TAG,"iWL dupa2");
+            //earHeartRate
             if(dC.deviceAddress.equals("84:68:3E:00:17:38")){
                 checkDeviceKindAndLaunchResponsibleThread(dC);
             }
+            //iWL
+            if(dC.deviceAddress.equals("00:22:D0:00:C8:C7")){
+                Log.i(TAG,"iWL");
+                checkDeviceKindAndLaunchResponsibleThread(dC);
+            }
         }
+
+//        for(BluetoothDevice bC:mBluetoothAdapter.getBondedDevices()){
+//            if(bC.getAddress().equals("00:22:d0:00:c8:c7")){
+//                checkDeviceKindAndLaunchResponsibleThread();
+//            }
+//        }
     }
 
     public void checkDeviceKindAndLaunchResponsibleThread(Device dC){
@@ -122,7 +137,6 @@ public class Connection {
             Intent gattServiceIntent = new Intent(mainActivity.getApplicationContext(), BluetoothLeService.class);
             mainActivity.mDeviceAddress = dC.deviceAddress;
             mainActivity.bindService(gattServiceIntent, mainActivity.mServiceConnection, Context.BIND_AUTO_CREATE);
-
         }else if(dC.deviceKind.equals("UNKNOWN")){
             Log.e(this.getClass().getName() + "","The type of device is not known");
         }

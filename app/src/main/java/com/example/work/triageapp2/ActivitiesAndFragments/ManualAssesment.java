@@ -22,7 +22,6 @@ public class ManualAssesment {
 
     }
 
-
     public Dialog onCreateDialogSingleChoice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         CharSequence[] array = {"5", "4", "3","2","1"};

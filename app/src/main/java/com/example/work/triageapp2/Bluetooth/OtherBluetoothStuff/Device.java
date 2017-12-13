@@ -33,33 +33,4 @@ public class Device {
         isConnected = connected;
     }
 
-//    private Device(Parcel in){
-//        this.deviceName = in.readString();
-//        this.deviceAddress = in.readString();
-//    }
-
-//    @Override
-//    public int describeContents() {
-//        return 0;
-//    }
-//
-//    @Override
-//    public void writeToParcel(Parcel parcel, int i) {
-//        parcel.writeString(deviceName);
-//        parcel.writeString(deviceAddress);
-//    }
-
-//    public static final Parcelable.Creator<Device> CREATOR = new Parcelable.Creator<Device>() {
-//
-//        @Override
-//        public Device createFromParcel(Parcel source) {
-//            return new Device(source);
-//        }
-//
-//        @Override
-//        public Device[] newArray(int size) {
-//            return new Device[size];
-//        }
-//    };
-
 }
