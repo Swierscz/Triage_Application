@@ -28,14 +28,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.example.work.triageapp2.AppGraphic.ViewBehaviour;
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.Bluetooth.Ble.SampleGattAttributes;
 import com.example.work.triageapp2.Bluetooth.Connection;
 import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.DeviceConnectionClock;
 import com.example.work.triageapp2.Database.DBAdapter;
 import com.example.work.triageapp2.R;
-import com.example.work.triageapp2.AppGraphic.MainActivityDrawingView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +46,18 @@ public class MainActivity extends AppCompatActivity
 
     final static String TAG = MainActivity.class.getSimpleName();
 
+    ViewBehaviour viewBehaviour;
     Connection connection;
     NavigationView navigationView;
-    MainActivityDrawingView view;
+    //    MainActivityDrawingView view;
     ImageView disableBluetoothIcon;
     EmgFragment emgFragment = null;
     Toolbar toolbar;
     Button emgButton;
+
+    Button triageButton;
+    ImageView hrView;
+    TextView hrText, hrTextLabel;
 
     Receiver receiver;
     DBAdapter dbAdapter;
@@ -66,6 +72,8 @@ public class MainActivity extends AppCompatActivity
 
     public String mDeviceAddress;
     boolean isFragmentWorking, isSurfaceCreated, isGattConnected;
+
+    boolean isTriageScreenVisible = true;
 
     public static final int PLOT_SIZE = 300;
 
@@ -97,7 +105,7 @@ public class MainActivity extends AppCompatActivity
 
     //region _____init_____
     private void initViews(){
-        view = (MainActivityDrawingView) findViewById(R.id.mainActivityDrawingViewId);
+//        view = (MainActivityDrawingView) findViewById(R.id.mainActivityDrawingViewId);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         disableBluetoothIcon = (ImageView) findViewById(R.id.disableBluetoothIcon);
         setSupportActionBar(toolbar);
@@ -110,7 +118,16 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        hrView = (ImageView) findViewById(R.id.hrView);
+        hrText = (TextView) findViewById(R.id.hrTextView);
+        hrTextLabel = (TextView) findViewById(R.id.hrTextViewLabel);
+        triageButton = (Button) findViewById(R.id.triageButton);
+
+        viewBehaviour = new ViewBehaviour(this);
+        viewBehaviour.start();
     }
+
     private void initBluetooth(){
         setBluetoothIconVisibility();
         setPermissionForBlueetoothUse();
@@ -134,7 +151,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().popBackStackImmediate();
                 }
                 setBackgroundComponentVisibility(false);
-                view.setIsTriageScreenVisible(false);
+                setIsTriageScreenVisible(false);
                 emgFragment = new EmgFragment();
                 replaceFragment(emgFragment, "EMG_FRAGMENT");
             }
@@ -236,7 +253,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-//    @SuppressLint("RestrictedApi")
+    //    @SuppressLint("RestrictedApi")
     @SuppressLint("RestrictedApi")
     private void displaySelectedScreen(int id) {
         Fragment fragment = null;
@@ -246,7 +263,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().popBackStackImmediate();
                 }
                 setBackgroundComponentVisibility(false);
-                view.setIsTriageScreenVisible(false);
+                setIsTriageScreenVisible(false);
 
                 fragment = new Calibration();
                 replaceFragment(fragment, "CALIBRATION_FRAGMENT");
@@ -330,7 +347,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void displayGattServices(List<BluetoothGattService> gattServices) {
-   //     Log.i(TAG,"displayGattServices");
+        //     Log.i(TAG,"displayGattServices");
         if (gattServices == null) return;
         mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
         // Loops through available GATT Services.
@@ -350,15 +367,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void readAndNotifySelectedCharacteristic(){
-    //    Log.i(TAG,"readAndNotifySelectedCharacteristic");
+        //    Log.i(TAG,"readAndNotifySelectedCharacteristic");
         if (mGattCharacteristics != null) {
             for(ArrayList<BluetoothGattCharacteristic> list : mGattCharacteristics){
                 for(BluetoothGattCharacteristic characteristic_temp : list){
                     if(characteristic_temp.getUuid().toString().equals(SampleGattAttributes.HEART_RATE_MEASUREMENT)){
-                     //   Log.i(TAG,"readAndNotifySelectedCharacteristicHEART_RATE");
+                        //   Log.i(TAG,"readAndNotifySelectedCharacteristicHEART_RATE");
                         readAndNotifyCharacteristic(characteristic_temp);
                     }else if(characteristic_temp.getUuid().toString().equals(SampleGattAttributes.MYOWARE_MUSCLE_SENSOR_CHARACTERISTIC)){
-                    //    Log.i(TAG,"readAndNotifySelectedCharacteristic2MYO_WARE");
+                        //    Log.i(TAG,"readAndNotifySelectedCharacteristic2MYO_WARE");
                         readAndNotifyCharacteristic(characteristic_temp);
                     }
                 }
@@ -367,7 +384,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void readAndNotifyCharacteristic(BluetoothGattCharacteristic characteristic_temp){
-   //     Log.i(TAG,"readAndNotifyCharacteristic");
+        //     Log.i(TAG,"readAndNotifyCharacteristic");
         BluetoothGattCharacteristic characteristic = null;
         characteristic = characteristic_temp;
         if (characteristic != null) {
@@ -418,15 +435,30 @@ public class MainActivity extends AppCompatActivity
     //region _____activity and fragments handle_____
     public void setBackgroundComponentVisibility(boolean visible){
         if(emgButton!=null){
-            if(visible==true)
+            if(visible==true){
                 emgButton.setVisibility(View.VISIBLE);
-            else
+                hrView.setVisibility(View.VISIBLE);
+                hrText.setVisibility(View.VISIBLE);
+                hrTextLabel.setVisibility(View.VISIBLE);
+                triageButton.setVisibility(View.VISIBLE);
+            }
+            else{
                 emgButton.setVisibility(View.GONE);
+                hrView.setVisibility(View.GONE);
+                hrText.setVisibility(View.GONE);
+                hrTextLabel.setVisibility(View.GONE);
+                triageButton.setVisibility(View.GONE);
+            }
+
         }
     }
     public void setIfItIsTriageScreen(boolean b){
-            view.setIsTriageScreenVisible(b);
-            setBackgroundComponentVisibility(b);
+        setIsTriageScreenVisible(b);
+        setBackgroundComponentVisibility(b);
+    }
+
+    public void setIsTriageScreenVisible(boolean b){
+        isTriageScreenVisible = b;
     }
 
     public boolean isSurfaceCreated() {
@@ -447,7 +479,50 @@ public class MainActivity extends AppCompatActivity
     public Connection getConnection() {
         return connection;
     }
-    public void unbindCurrentService(){
-        unbindService(mServiceConnection);
+    public void unbindCurrentService(){unbindService(mServiceConnection);}
+    //region _____hrView_____
+    public ImageView getHrView(){
+        return hrView;
     }
+
+
+    public void setDisabledOrNotHrView(boolean b){
+        final boolean tempBool=b;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run () {
+                if(tempBool){
+                    hrView.setImageResource(R.drawable.green_heart_hr);
+                }else{
+                    hrView.setImageResource(R.drawable.green_heart_rate_disabled);
+                }
+            }
+        });
+    }
+
+    public void hideOrShowHrView(boolean b){
+        final boolean tempBool=b;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run () {
+                if(tempBool){
+                    hrView.setVisibility(View.VISIBLE);
+                }else{
+                    hrView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
+    //endregion_____
+    public void setHr(int hr){
+        final int HR = hr;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run () {
+                hrText.setText(String.valueOf(HR));
+            }
+        });
+
+    }
+
 }

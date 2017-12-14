@@ -177,6 +177,7 @@ public class BluetoothLeService extends IntentService {
             int heartRate = formatIncomingDataForHeartRate(characteristic);
             SoldierParameter.heartRate = heartRate;
             Log.i(TAG,"heartRate is: " + String.valueOf(heartRate) );
+            mainActivity.setHr(heartRate);
             DeviceConnectionClock.resetTimerForHeartRate();
             if(SoldierParameter.isHeartRateActive == false)
                 SoldierParameter.isHeartRateActive = true;

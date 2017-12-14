@@ -11,7 +11,5 @@
                 android:type="linear">
             </gradient>
         </shape>
-
     </item>
-
 </selector>

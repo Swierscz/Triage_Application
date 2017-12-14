@@ -101,9 +101,7 @@ public class Connection {
     }
 
     public void connectToSoldierDevices(){
-        Log.i(TAG,"iWL dupa");
         for(Device dC : listOfDevices){
-            Log.i(TAG,"iWL dupa2");
             //earHeartRate
             if(dC.deviceAddress.equals("84:68:3E:00:17:38")){
                 checkDeviceKindAndLaunchResponsibleThread(dC);
