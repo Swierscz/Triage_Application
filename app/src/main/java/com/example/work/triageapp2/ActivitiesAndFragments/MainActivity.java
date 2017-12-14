@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
     BluetoothGattCharacteristic mNotifyCharacteristic;
 
     public String mDeviceAddress;
-    boolean isFragmentWorking, isSurfaceCreated, isGattConnected;
+    boolean isGattConnected;
 
     boolean isTriageScreenVisible = true;
 
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         Log.i(TAG,"onResume");
         super.onResume();
-        setBackgroundComponentVisibility(true);
+//        setBackgroundComponentVisibility(true);
         dbAdapter.open();
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
@@ -461,18 +461,6 @@ public class MainActivity extends AppCompatActivity
         isTriageScreenVisible = b;
     }
 
-    public boolean isSurfaceCreated() {
-        return isSurfaceCreated;
-    }
-    public void setSurfaceCreated(boolean surfaceCreated) {
-        isSurfaceCreated = surfaceCreated;
-    }
-    public boolean isFragmentWorking() {
-        return isFragmentWorking;
-    }
-    public void setFragmentWorking(boolean fragmentWorking) {
-        isFragmentWorking = fragmentWorking;
-    }
     //endregion
 
 

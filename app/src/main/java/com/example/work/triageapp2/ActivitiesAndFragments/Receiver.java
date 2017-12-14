@@ -24,8 +24,7 @@ public class Receiver {
     public Receiver(MainActivity mainActivity){
         this.mainActivity = mainActivity;
     }
-
-
+    
 
     private final BroadcastReceiver bluetoothStateChangeReceiver = new BroadcastReceiver() {
         public void onReceive (Context context, Intent intent) {
@@ -72,23 +71,6 @@ public class Receiver {
                         mainActivity.getApplicationContext().sendBroadcast(intent2);
                     }
                 }
-            }
-        }
-    };
-
-    private final BroadcastReceiver surfaceCreationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (action.equals("SURFACE_CREATED")) {
-                mainActivity.isSurfaceCreated = true;
-                if(mainActivity.isFragmentWorking){
-                    mainActivity.setIfItIsTriageScreen(false);
-                }else{
-                    mainActivity.setIfItIsTriageScreen(true);
-                }
-            }else if(action.equals("SURFACE_DESTROYED")){
-                mainActivity.isSurfaceCreated = false;
             }
         }
     };
@@ -146,14 +128,12 @@ public class Receiver {
 
     //region ______register and unregister receivers_____
     public void registerReceivers(){
-        mainActivity.registerReceiver(surfaceCreationReceiver,createIntentFilterForSurfaceCreationReceiver());
         mainActivity.registerReceiver(bluetoothStateChangeReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
         mainActivity.registerReceiver(mGattUpdateReceiver, createGATTIntentFilter());
         mainActivity.registerReceiver(deviceConnectionReceiver,createIntentFilterForDeviceConnectionReceiver());
     }
 
     public void unregisterReceivers(){
-        mainActivity.unregisterReceiver(surfaceCreationReceiver);
         mainActivity.unregisterReceiver(bluetoothStateChangeReceiver);
         mainActivity.unregisterReceiver(mGattUpdateReceiver);
         mainActivity.unregisterReceiver(deviceConnectionReceiver);

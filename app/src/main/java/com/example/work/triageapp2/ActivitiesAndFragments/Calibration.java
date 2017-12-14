@@ -51,7 +51,6 @@ public class Calibration extends Fragment implements OnBackPressedListener{
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Calibration");
         Log.i(TAG,"Constructor");
-        ((MainActivity)getActivity()).setFragmentWorking(true);
 
         connection = ((MainActivity)getActivity()).getConnection();
         listOfDevices = (ListView) getActivity().findViewById(R.id.bluetoothDevicesList);
@@ -81,7 +80,6 @@ public class Calibration extends Fragment implements OnBackPressedListener{
 
     @Override
     public void onBackPressed() {
-        ((MainActivity)getActivity()).setFragmentWorking(false);
         setIfItIsTriageScreen((MainActivity)getActivity(),true);
         getActivity().getSupportFragmentManager().beginTransaction().
                 remove(getActivity().getSupportFragmentManager().findFragmentByTag("CALIBRATION_FRAGMENT")).commit();
@@ -96,8 +94,8 @@ public class Calibration extends Fragment implements OnBackPressedListener{
             Log.i(TAG,"bluetooth settings request has been received");
             Thread thread = new Thread(){
                 public void run(){
-                    while (((MainActivity)getActivity()).isSurfaceCreated() == true){} //do nothing
-                    setIfItIsTriageScreen((MainActivity) getActivity(), false);
+//                    while (((MainActivity)getActivity()).isSurfaceCreated() == true){} //do nothing
+//                    setIfItIsTriageScreen((MainActivity) getActivity(), false);
                 }
             };
 
