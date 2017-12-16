@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.ActivitiesAndFragments;
+package com.example.work.triageapp2.MainPackage.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -34,8 +34,14 @@ import com.example.work.triageapp2.AppGraphic.ViewBehaviour;
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.Bluetooth.Ble.SampleGattAttributes;
 import com.example.work.triageapp2.Bluetooth.Connection;
-import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.DeviceConnectionClock;
+import com.example.work.triageapp2.Bluetooth.DeviceConnectionClock;
 import com.example.work.triageapp2.Database.DBAdapter;
+import com.example.work.triageapp2.MainPackage.Fragments.CalibrationFragment;
+import com.example.work.triageapp2.MainPackage.Fragments.EmgFragment;
+import com.example.work.triageapp2.MainPackage.Fragments.OnBackPressedListener;
+import com.example.work.triageapp2.MainPackage.ManualAssesmentDialog;
+import com.example.work.triageapp2.MainPackage.Receivers;
+import com.example.work.triageapp2.MainPackage.SoldierAlarm;
 import com.example.work.triageapp2.R;
 
 import java.util.ArrayList;
@@ -47,10 +53,10 @@ public class MainActivity extends AppCompatActivity
     final static String TAG = MainActivity.class.getSimpleName();
 
     ViewBehaviour viewBehaviour;
-    Connection connection;
+    public Connection connection;
     NavigationView navigationView;
     //    MainActivityDrawingView view;
-    ImageView disableBluetoothIcon;
+    public ImageView disableBluetoothIcon;
     EmgFragment emgFragment = null;
     Toolbar toolbar;
     Button emgButton;
@@ -59,19 +65,19 @@ public class MainActivity extends AppCompatActivity
     ImageView hrView;
     TextView hrText, hrTextLabel;
 
-    Receiver receiver;
+    Receivers receivers;
     DBAdapter dbAdapter;
     ArrayList<Float> plotList = new ArrayList<Float>();
 
     DeviceConnectionClock deviceConnectionClock;
 
     public BluetoothAdapter mBluetoothAdapter;
-    BluetoothLeService mBluetoothLeService;
+    public BluetoothLeService mBluetoothLeService;
     ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     BluetoothGattCharacteristic mNotifyCharacteristic;
 
     public String mDeviceAddress;
-    boolean isGattConnected;
+    public boolean isGattConnected;
 
     boolean isTriageScreenVisible = true;
 
@@ -160,8 +166,8 @@ public class MainActivity extends AppCompatActivity
     private void initDeviceClockAndReceivers(){
         deviceConnectionClock = new DeviceConnectionClock();
         deviceConnectionClock.start();
-        receiver = new Receiver(this);
-        receiver.registerReceivers();
+        receivers = new Receivers(this);
+        receivers.registerReceivers();
     }
     private void initDataBase(){
         dbAdapter = new DBAdapter(getApplicationContext());
@@ -235,7 +241,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        receiver.unregisterReceivers();
+        receivers.unregisterReceivers();
         unbindService(mServiceConnection);
         DBAdapter.deleteDataBase(getApplicationContext());
     }
@@ -265,11 +271,11 @@ public class MainActivity extends AppCompatActivity
                 setBackgroundComponentVisibility(false);
                 setIsTriageScreenVisible(false);
 
-                fragment = new Calibration();
+                fragment = new CalibrationFragment();
                 replaceFragment(fragment, "CALIBRATION_FRAGMENT");
                 break;
             case R.id.nav_assesment:
-                new ManualAssesment(MainActivity.this);
+                new ManualAssesmentDialog(MainActivity.this);
                 break;
 
             case R.id.nav_alarm:
@@ -452,7 +458,7 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
-    public void setIfItIsTriageScreen(boolean b){
+    public void setIfItIsMainScreen(boolean b){
         setIsTriageScreenVisible(b);
         setBackgroundComponentVisibility(b);
     }

@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.ActivitiesAndFragments;
+package com.example.work.triageapp2.MainPackage.Fragments;
 
 
 import android.graphics.Paint;
@@ -10,21 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidplot.Plot;
 import com.androidplot.ui.HorizontalPositioning;
 import com.androidplot.ui.Size;
-import com.androidplot.ui.SizeMetric;
 import com.androidplot.ui.SizeMode;
 import com.androidplot.ui.VerticalPositioning;
-import com.androidplot.ui.widget.Widget;
-import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.AdvancedLineAndPointRenderer;
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.StepMode;
-import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
 import com.example.work.triageapp2.R;
 
 import java.util.ArrayList;
@@ -35,7 +31,7 @@ import java.util.List;
  * Created by BoryS on 07.12.2017.
  */
 
-public class EmgFragment extends Fragment implements OnBackPressedListener {
+public class EmgFragment extends Fragment implements OnBackPressedListener, CheckIfMainScreen {
 
     private XYPlot plot;
 
@@ -123,13 +119,10 @@ public class EmgFragment extends Fragment implements OnBackPressedListener {
     @Override
     public void onBackPressed() {
         ((MainActivity) getActivity()).setEmgFragmentToNull();
-        setIfItIsTriageScreen((MainActivity)getActivity(),true);
+        setIfItIsMainScreen((MainActivity)getActivity(),true);
         getActivity().getSupportFragmentManager().beginTransaction().
                 remove(getActivity().getSupportFragmentManager().findFragmentByTag("EMG_FRAGMENT")).commit();
         getActivity().getSupportFragmentManager().popBackStackImmediate();
 
     }
-
-    public void setIfItIsTriageScreen(MainActivity mA, boolean b){   mA.setIfItIsTriageScreen(b);   }
-
 }

@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.ActivitiesAndFragments;
+package com.example.work.triageapp2.MainPackage.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,8 +18,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.work.triageapp2.Bluetooth.Connection;
-import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.Device;
-import com.example.work.triageapp2.OwnAppObjects.CustomBluetoothListAdapter;
+import com.example.work.triageapp2.Bluetooth.Device;
+import com.example.work.triageapp2.CustomObjects.CustomBluetoothListAdapter;
+import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
 import com.example.work.triageapp2.R;
 
 import java.util.ArrayList;
@@ -30,13 +31,13 @@ import static android.content.ContentValues.TAG;
  * Created by BoryS on 06.08.2017.
  */
 
-public class Calibration extends Fragment implements OnBackPressedListener{
+public class CalibrationFragment extends Fragment implements OnBackPressedListener,CheckIfMainScreen {
 
     Connection connection;
     private ListView listOfDevices;
     private ArrayAdapter<String> adapter;
 
-    public Calibration(){
+    public CalibrationFragment(){
 
     }
 
@@ -49,7 +50,7 @@ public class Calibration extends Fragment implements OnBackPressedListener{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Calibration");
+        getActivity().setTitle("CalibrationFragment");
         Log.i(TAG,"Constructor");
 
         connection = ((MainActivity)getActivity()).getConnection();
@@ -80,7 +81,7 @@ public class Calibration extends Fragment implements OnBackPressedListener{
 
     @Override
     public void onBackPressed() {
-        setIfItIsTriageScreen((MainActivity)getActivity(),true);
+        setIfItIsMainScreen((MainActivity)getActivity(),true);
         getActivity().getSupportFragmentManager().beginTransaction().
                 remove(getActivity().getSupportFragmentManager().findFragmentByTag("CALIBRATION_FRAGMENT")).commit();
         getActivity().getSupportFragmentManager().popBackStackImmediate();
@@ -95,7 +96,7 @@ public class Calibration extends Fragment implements OnBackPressedListener{
             Thread thread = new Thread(){
                 public void run(){
 //                    while (((MainActivity)getActivity()).isSurfaceCreated() == true){} //do nothing
-//                    setIfItIsTriageScreen((MainActivity) getActivity(), false);
+//                    setIfItIsMainScreen((MainActivity) getActivity(), false);
                 }
             };
 
@@ -143,6 +144,4 @@ public class Calibration extends Fragment implements OnBackPressedListener{
         listOfDevices.setAdapter(adapter);
     }
 
-
-    public void setIfItIsTriageScreen(MainActivity mA, boolean b){   mA.setIfItIsTriageScreen(b);   }
 }

@@ -3,8 +3,8 @@ package com.example.work.triageapp2.Bluetooth.DevicesManagment;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
-import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.DeviceConnectionClock;
-import com.example.work.triageapp2.SoldierParameter;
+import com.example.work.triageapp2.Bluetooth.DeviceConnectionClock;
+import com.example.work.triageapp2.Bluetooth.SoldierStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,14 +57,14 @@ public class PolarIWL_DataReceiver extends Thread {
                     Log.v("result", sb.toString());
 
 
-                    SoldierParameter.heartRate = mmBuffer[4];
+                    SoldierStatus.heartRate = mmBuffer[4];
                     if(String.valueOf(mmBuffer[4]).equals("0")){
-                        SoldierParameter.isHeartRateActive = false;
+                        SoldierStatus.isHeartRateActive = false;
                     }
                     else{
                         DeviceConnectionClock.resetTimerForHeartRate();
-                        if(SoldierParameter.isHeartRateActive == false)
-                            SoldierParameter.isHeartRateActive = true;
+                        if(SoldierStatus.isHeartRateActive == false)
+                            SoldierStatus.isHeartRateActive = true;
                     }
                 }
                 //  }

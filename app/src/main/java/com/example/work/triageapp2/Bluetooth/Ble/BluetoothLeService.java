@@ -33,10 +33,10 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.example.work.triageapp2.ActivitiesAndFragments.MainActivity;
-import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.DeviceConnectionClock;
+import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
+import com.example.work.triageapp2.Bluetooth.DeviceConnectionClock;
 import com.example.work.triageapp2.Database.DBAdapter;
-import com.example.work.triageapp2.SoldierParameter;
+import com.example.work.triageapp2.Bluetooth.SoldierStatus;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -175,12 +175,12 @@ public class BluetoothLeService extends IntentService {
         final Intent intent = new Intent(action);
         if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
             int heartRate = formatIncomingDataForHeartRate(characteristic);
-            SoldierParameter.heartRate = heartRate;
+            SoldierStatus.heartRate = heartRate;
             Log.i(TAG,"heartRate is: " + String.valueOf(heartRate) );
             mainActivity.setHr(heartRate);
             DeviceConnectionClock.resetTimerForHeartRate();
-            if(SoldierParameter.isHeartRateActive == false)
-                SoldierParameter.isHeartRateActive = true;
+            if(SoldierStatus.isHeartRateActive == false)
+                SoldierStatus.isHeartRateActive = true;
         }
         else if(UUID_MYOWARE_MUSCLE_MEASURMENT.equals(characteristic.getUuid())){
 //            float f1 = formatIncomingDataForMuscleDevice(characteristic);

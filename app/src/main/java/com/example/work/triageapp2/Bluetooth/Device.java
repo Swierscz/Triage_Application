@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff;
+package com.example.work.triageapp2.Bluetooth;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,14 +1,9 @@
 package com.example.work.triageapp2.AppGraphic;
 
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.example.work.triageapp2.ActivitiesAndFragments.MainActivity;
-import com.example.work.triageapp2.R;
-import com.example.work.triageapp2.SoldierParameter;
-
-import static android.content.ContentValues.TAG;
+import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
+import com.example.work.triageapp2.Bluetooth.SoldierStatus;
 
 /**
  * Created by BoryS on 26.10.2017.
@@ -38,7 +33,7 @@ public class ViewBehaviour extends Thread{
     }
 
     public void managerHeartRateView(){
-        if(SoldierParameter.isHeartRateActive){
+        if(SoldierStatus.isHeartRateActive){
             if(!isHrIconEnabled){
                 mainActivity.setDisabledOrNotHrView(true);
                 isHrIconEnabled = true;
@@ -54,7 +49,7 @@ public class ViewBehaviour extends Thread{
     }
 
     public void manageHeartRateBeep() {
-        int heartRate = SoldierParameter.heartRate;
+        int heartRate = SoldierStatus.heartRate;
         if (heartRate != 0) {
             int breakTime = 60000 / heartRate;
             try {

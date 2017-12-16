@@ -8,10 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.example.work.triageapp2.ActivitiesAndFragments.MainActivity;
+import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.Bluetooth.Classic.ClassicConnection;
-import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.Device;
 
 import java.util.ArrayList;
 

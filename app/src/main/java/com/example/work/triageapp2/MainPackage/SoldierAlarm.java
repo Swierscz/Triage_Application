@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.ActivitiesAndFragments;
+package com.example.work.triageapp2.MainPackage;
 
 import android.content.Context;
 import android.widget.Toast;

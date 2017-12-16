@@ -1,6 +1,6 @@
-package com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff;
+package com.example.work.triageapp2.Bluetooth;
 
-import com.example.work.triageapp2.SoldierParameter;
+import com.example.work.triageapp2.Bluetooth.SoldierStatus;
 
 /**
  * Created by BoryS on 26.10.2017.
@@ -19,13 +19,13 @@ public class DeviceConnectionClock extends Thread {
     public void run() {
 
         while(true){
-            if(SoldierParameter.isHeartRateActive)
+            if(SoldierStatus.isHeartRateActive)
                 heartRateConnectionTimeInSeconds ++;
 
 
             if(heartRateConnectionTimeInSeconds == 20){
-                SoldierParameter.isHeartRateActive = false;
-                SoldierParameter.heartRate = 0;
+                SoldierStatus.isHeartRateActive = false;
+                SoldierStatus.heartRate = 0;
             }
 
             try {

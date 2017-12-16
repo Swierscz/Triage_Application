@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.ActivitiesAndFragments;
+package com.example.work.triageapp2.MainPackage;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -10,7 +10,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
-import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.Device;
+import com.example.work.triageapp2.Bluetooth.Device;
+import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
 
 import static android.content.ContentValues.TAG;
 
@@ -18,10 +19,10 @@ import static android.content.ContentValues.TAG;
  * Created by BoryS on 22.10.2017.
  */
 
-public class Receiver {
+public class Receivers {
     private MainActivity mainActivity;
 
-    public Receiver(MainActivity mainActivity){
+    public Receivers(MainActivity mainActivity){
         this.mainActivity = mainActivity;
     }
     

@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.OwnAppObjects;
+package com.example.work.triageapp2.CustomObjects;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -8,11 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.work.triageapp2.Bluetooth.OtherBluetoothStuff.Device;
+import com.example.work.triageapp2.Bluetooth.Device;
 import com.example.work.triageapp2.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by BoryS on 20.10.2017.

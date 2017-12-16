@@ -1,20 +1,19 @@
-package com.example.work.triageapp2.ActivitiesAndFragments;
+package com.example.work.triageapp2.MainPackage;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.widget.Toast;
 
 /**
  * Created by BoryS on 08.12.2017.
  */
 
-public class ManualAssesment {
+public class ManualAssesmentDialog {
 
     Context context;
 
-    public ManualAssesment(Context context) {
+    public ManualAssesmentDialog(Context context) {
         this.context = context;
 
         Dialog dialog = onCreateDialogSingleChoice();
