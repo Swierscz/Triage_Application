@@ -4,13 +4,13 @@ package com.example.work.triageapp2.Database;
  * Created by BoryS on 29.10.2017.
  */
 
-public class Emg {
+public class EmgBean {
     private long id;
     private double emg;
 
-    public Emg(long id, double hearRate){
+    public EmgBean(long id, double emg){
         this.id = id;
-        this.emg = hearRate;
+        this.emg = emg;
     }
 
     public long getId() {

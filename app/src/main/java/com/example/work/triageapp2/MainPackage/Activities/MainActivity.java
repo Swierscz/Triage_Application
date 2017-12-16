@@ -30,7 +30,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.work.triageapp2.AppGraphic.ViewBehaviour;
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.Bluetooth.Ble.SampleGattAttributes;
 import com.example.work.triageapp2.Bluetooth.Connection;
@@ -39,7 +38,7 @@ import com.example.work.triageapp2.Database.DBAdapter;
 import com.example.work.triageapp2.MainPackage.Fragments.CalibrationFragment;
 import com.example.work.triageapp2.MainPackage.Fragments.EmgFragment;
 import com.example.work.triageapp2.MainPackage.Fragments.OnBackPressedListener;
-import com.example.work.triageapp2.MainPackage.ManualAssesmentDialog;
+import com.example.work.triageapp2.MainPackage.ManualAssesment;
 import com.example.work.triageapp2.MainPackage.Receivers;
 import com.example.work.triageapp2.MainPackage.SoldierAlarm;
 import com.example.work.triageapp2.R;
@@ -52,24 +51,25 @@ public class MainActivity extends AppCompatActivity
 
     final static String TAG = MainActivity.class.getSimpleName();
 
-    ViewBehaviour viewBehaviour;
+    MainViewBehaviour mainViewBehaviour;
     public Connection connection;
     NavigationView navigationView;
-    //    MainActivityDrawingView view;
-    public ImageView disableBluetoothIcon;
+    DBAdapter dbAdapter;
     EmgFragment emgFragment = null;
-    Toolbar toolbar;
-    Button emgButton;
+    DeviceConnectionClock deviceConnectionClock;
 
-    Button triageButton;
-    ImageView hrView;
+
+
+    Toolbar toolbar;
+    public ImageView disableBluetoothIcon, hrView;
+    Button emgButton, triageButton;
     TextView hrText, hrTextLabel;
 
     Receivers receivers;
-    DBAdapter dbAdapter;
+
     ArrayList<Float> plotList = new ArrayList<Float>();
 
-    DeviceConnectionClock deviceConnectionClock;
+
 
     public BluetoothAdapter mBluetoothAdapter;
     public BluetoothLeService mBluetoothLeService;
@@ -130,23 +130,18 @@ public class MainActivity extends AppCompatActivity
         hrTextLabel = (TextView) findViewById(R.id.hrTextViewLabel);
         triageButton = (Button) findViewById(R.id.triageButton);
 
-        viewBehaviour = new ViewBehaviour(this);
-        viewBehaviour.start();
+        mainViewBehaviour = new MainViewBehaviour(this);
+        mainViewBehaviour.start();
     }
 
     private void initBluetooth(){
         setBluetoothIconVisibility();
         setPermissionForBlueetoothUse();
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-
-        if(mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()){
-            Intent enableBtIntent = new Intent((BluetoothAdapter.ACTION_REQUEST_ENABLE));
-            startActivityForResult(enableBtIntent,((MainActivity)this).getResources().getInteger(R.integer.REQUEST_ENABLE_BT));
-            Log.i(TAG,"request enable bluetooth has started");
-        }
+        setBluetoothAdapter();
+        startBluetoothRequest();
     }
+
+
     private void initAndHandleEmgButton(){
         emgButton = (Button) findViewById(R.id.emgButton);
         emgButton.setOnClickListener(new View.OnClickListener() {
@@ -275,7 +270,7 @@ public class MainActivity extends AppCompatActivity
                 replaceFragment(fragment, "CALIBRATION_FRAGMENT");
                 break;
             case R.id.nav_assesment:
-                new ManualAssesmentDialog(MainActivity.this);
+                new ManualAssesment(MainActivity.this);
                 break;
 
             case R.id.nav_alarm:
@@ -307,6 +302,12 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
+
+//endregion
+
+    //region _____bluetooth code_____
+
     public void setBluetoothIconVisibility(){
         if(!isBluetoothEnabled()){
             disableBluetoothIcon.setVisibility(View.VISIBLE);
@@ -315,9 +316,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-//endregion
+    private void startBluetoothRequest() {
+        if(mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()){
+            Intent enableBtIntent = new Intent((BluetoothAdapter.ACTION_REQUEST_ENABLE));
+            startActivityForResult(enableBtIntent,((MainActivity)this).getResources().getInteger(R.integer.REQUEST_ENABLE_BT));
+            Log.i(TAG,"request enable bluetooth has started");
+        }
+    }
 
-    //region _____bluetooth code_____
+    private void setBluetoothAdapter() {
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+    }
+
 
     private void setPermissionForBlueetoothUse() {
         int permissionCheck = ContextCompat.checkSelfPermission((MainActivity) this,
@@ -378,10 +390,8 @@ public class MainActivity extends AppCompatActivity
             for(ArrayList<BluetoothGattCharacteristic> list : mGattCharacteristics){
                 for(BluetoothGattCharacteristic characteristic_temp : list){
                     if(characteristic_temp.getUuid().toString().equals(SampleGattAttributes.HEART_RATE_MEASUREMENT)){
-                        //   Log.i(TAG,"readAndNotifySelectedCharacteristicHEART_RATE");
                         readAndNotifyCharacteristic(characteristic_temp);
                     }else if(characteristic_temp.getUuid().toString().equals(SampleGattAttributes.MYOWARE_MUSCLE_SENSOR_CHARACTERISTIC)){
-                        //    Log.i(TAG,"readAndNotifySelectedCharacteristic2MYO_WARE");
                         readAndNotifyCharacteristic(characteristic_temp);
                     }
                 }
@@ -390,21 +400,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void readAndNotifyCharacteristic(BluetoothGattCharacteristic characteristic_temp){
-        //     Log.i(TAG,"readAndNotifyCharacteristic");
         BluetoothGattCharacteristic characteristic = null;
         characteristic = characteristic_temp;
         if (characteristic != null) {
             final int charaProp = characteristic.getProperties();
-//            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-//                // If there is an active notification on a characteristic, clear
-//                // it first so it doesn't update the data field on the user interface.
-//                if (mNotifyCharacteristic != null) {
-//                    mBluetoothLeService.setCharacteristicNotification(
-//                            mNotifyCharacteristic, false);
-//                    mNotifyCharacteristic = null;
-//                }
-//                //mBluetoothLeService.readCharacteristic(characteristic);
-//            }
+
             if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
                 mNotifyCharacteristic = characteristic;
                 mBluetoothLeService.setCharacteristicNotification(

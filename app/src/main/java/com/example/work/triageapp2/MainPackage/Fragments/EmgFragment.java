@@ -31,7 +31,7 @@ import java.util.List;
  * Created by BoryS on 07.12.2017.
  */
 
-public class EmgFragment extends Fragment implements OnBackPressedListener, CheckIfMainScreen {
+public class EmgFragment extends Fragment implements OnBackPressedListener, IfMainScreenCheck {
 
     private XYPlot plot;
 
@@ -110,7 +110,7 @@ public class EmgFragment extends Fragment implements OnBackPressedListener, Chec
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Emg Plot");
+        getActivity().setTitle("EmgBean Plot");
         initPlot();
         refreshPlot();
 

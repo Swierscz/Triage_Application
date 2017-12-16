@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.AppGraphic;
+package com.example.work.triageapp2.MainPackage.Activities;
 
 import android.view.View;
 
@@ -9,14 +9,14 @@ import com.example.work.triageapp2.Bluetooth.SoldierStatus;
  * Created by BoryS on 26.10.2017.
  */
 
-public class ViewBehaviour extends Thread{
+public class MainViewBehaviour extends Thread{
     MainActivity mainActivity;
 
 
     boolean isHrIconEnabled = false;
     private boolean running;
 
-    public ViewBehaviour(MainActivity mainActivity){
+    public MainViewBehaviour(MainActivity mainActivity){
         this.mainActivity = mainActivity;
 //        triagePanel = (Button) mainActivity.findViewById(R.id.triageButton);
 

@@ -96,14 +96,14 @@ public class DBAdapter {
         return db.query(DB_MUSCLE_EMG_TABLE, columns, null, null, null, null, null);
     }
 
-    public Emg getEmg(long id) {
+    public EmgBean getEmg(long id) {
         String[] columns = {KEY_ID, EMG};
         String where = KEY_ID + "=" + id;
         Cursor cursor = db.query(DB_MUSCLE_EMG_TABLE, columns, where, null, null, null, null);
-        Emg task = null;
+        EmgBean task = null;
         if(cursor != null && cursor.moveToFirst()) {
             double emgMeasure = cursor.getDouble(EMG_COLUMN);
-            task = new Emg(id, emgMeasure);
+            task = new EmgBean(id, emgMeasure);
         }
         return task;
     }

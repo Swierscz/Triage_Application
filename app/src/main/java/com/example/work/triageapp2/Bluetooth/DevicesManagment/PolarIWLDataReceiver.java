@@ -16,12 +16,12 @@ import static android.content.ContentValues.TAG;
  * Pairing code: 0000
  */
 
-public class PolarIWL_DataReceiver extends Thread {
+public class PolarIWLDataReceiver extends Thread {
     public byte[] mmBuffer; // mmBuffer store for the stream
     public final BluetoothSocket mmSocket;
     public final InputStream mmInStream;
 
-    public PolarIWL_DataReceiver(BluetoothSocket mmSocket){
+    public PolarIWLDataReceiver(BluetoothSocket mmSocket){
         this.mmSocket = mmSocket;
         InputStream tmpIn = null;
         try {

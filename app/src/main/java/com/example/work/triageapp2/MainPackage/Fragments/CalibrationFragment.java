@@ -19,7 +19,6 @@ import android.widget.ListView;
 
 import com.example.work.triageapp2.Bluetooth.Connection;
 import com.example.work.triageapp2.Bluetooth.Device;
-import com.example.work.triageapp2.CustomObjects.CustomBluetoothListAdapter;
 import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
 import com.example.work.triageapp2.R;
 
@@ -31,7 +30,7 @@ import static android.content.ContentValues.TAG;
  * Created by BoryS on 06.08.2017.
  */
 
-public class CalibrationFragment extends Fragment implements OnBackPressedListener,CheckIfMainScreen {
+public class CalibrationFragment extends Fragment implements OnBackPressedListener,IfMainScreenCheck {
 
     Connection connection;
     private ListView listOfDevices;

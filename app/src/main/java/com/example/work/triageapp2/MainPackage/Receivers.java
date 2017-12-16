@@ -93,22 +93,6 @@ public class Receivers {
         }
     };
 
-
-
-    //region _____filters_____
-    private IntentFilter createIntentFilterForBLEDeviceClick(){
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("BLE_DEVICE_NAME_AND_ADDRESS");
-        return  intentFilter;
-    }
-
-    private IntentFilter createIntentFilterForSurfaceCreationReceiver(){
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("SURFACE_CREATED");
-        intentFilter.addAction("SURFACE_DESTROYED");
-        return intentFilter;
-    }
-
     private IntentFilter createIntentFilterForDeviceConnectionReceiver(){
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);

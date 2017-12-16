@@ -9,11 +9,11 @@ import android.content.DialogInterface;
  * Created by BoryS on 08.12.2017.
  */
 
-public class ManualAssesmentDialog {
+public class ManualAssesment {
 
     Context context;
 
-    public ManualAssesmentDialog(Context context) {
+    public ManualAssesment(Context context) {
         this.context = context;
 
         Dialog dialog = onCreateDialogSingleChoice();
