@@ -1,6 +1,6 @@
-package com.example.work.triageapp2.MainPackage.Fragments;
+package com.example.work.triageapp2.MainPackage;
 
-import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
+import com.example.work.triageapp2.MainPackage.MainActivity;
 
 /**
  * Created by BoryS on 16.12.2017.

@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.MainPackage.Activities;
+package com.example.work.triageapp2.MainPackage;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

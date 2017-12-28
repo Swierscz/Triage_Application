@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainPackage.Activities.LoginPageActivity">
+        <activity android:name=".MainPackage.LoginPageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainPackage.Activities.MainActivity"
+            android:name=".MainPackage.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
 

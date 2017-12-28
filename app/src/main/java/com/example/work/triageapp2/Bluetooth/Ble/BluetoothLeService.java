@@ -33,10 +33,10 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
+import com.example.work.triageapp2.MainPackage.MainActivity;
 import com.example.work.triageapp2.Bluetooth.DeviceConnectionClock;
 import com.example.work.triageapp2.Database.DBAdapter;
-import com.example.work.triageapp2.Bluetooth.SoldierStatus;
+import com.example.work.triageapp2.MainPackage.SoldierStatus;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -99,7 +99,9 @@ public class BluetoothLeService extends IntentService {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 intentAction = ACTION_GATT_CONNECTED;
                 mConnectionState = STATE_CONNECTED;
+
                 broadcastUpdate(intentAction);
+
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
                 Log.i(TAG, "Attempting to start service discovery:" +
@@ -197,7 +199,7 @@ public class BluetoothLeService extends IntentService {
 //            final Intent intent2 = new Intent("EMG_RECEIVED");
 //            getApplicationContext().sendBroadcast(intent2);
 
-            mainActivity.fillPlotValues(muscleRate);
+            mainActivity.plotEMG.fillPlotValues(muscleRate);
             if(mainActivity.getEmgFragment()!=null){
                 mainActivity.getEmgFragment().refreshPlot();
             }

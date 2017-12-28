@@ -12,6 +12,9 @@ public class SoldierAlarm {
 
     public SoldierAlarm(Context context) {
         this.context = context;
+    }
+
+    public void sendAlarm(){
         Toast.makeText(context, "Alarm został wysłany", Toast.LENGTH_SHORT).show();
     }
 

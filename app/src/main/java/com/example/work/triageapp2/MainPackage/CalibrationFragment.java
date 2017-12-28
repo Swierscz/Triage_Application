@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.MainPackage.Fragments;
+package com.example.work.triageapp2.MainPackage;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +19,6 @@ import android.widget.ListView;
 
 import com.example.work.triageapp2.Bluetooth.Connection;
 import com.example.work.triageapp2.Bluetooth.Device;
-import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
 import com.example.work.triageapp2.R;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
         getActivity().setTitle("CalibrationFragment");
         Log.i(TAG,"Constructor");
 
-        connection = ((MainActivity)getActivity()).getConnection();
+        connection = ((MainActivity)getActivity()).bluetoothManagement.getConnection();
         listOfDevices = (ListView) getActivity().findViewById(R.id.bluetoothDevicesList);
 
         setHasOptionsMenu(true);
@@ -115,7 +114,7 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i(TAG,"item has been clicked");
 
-                if(((MainActivity)getActivity()).mBluetoothAdapter!= null && ((MainActivity)getActivity()).mBluetoothAdapter.isEnabled()){
+                if(((MainActivity)getActivity()).bluetoothManagement.mBluetoothAdapter!= null && ((MainActivity)getActivity()).bluetoothManagement.mBluetoothAdapter.isEnabled()){
                     startOrStopSensor(i);
                 }
             }
@@ -129,7 +128,7 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
                 if(!connection.isDeviceConnected(dC))
                     connection.checkDeviceKindAndLaunchResponsibleThread(dC);
                 else{
-                    ((MainActivity)getActivity()).unbindCurrentService();
+                    ((MainActivity)getActivity()).bluetoothManagement.unbindCurrentService();
                 }
 
             }

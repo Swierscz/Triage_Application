@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.MainPackage.Fragments;
+package com.example.work.triageapp2.MainPackage;
 
 import android.app.Activity;
 import android.view.LayoutInflater;

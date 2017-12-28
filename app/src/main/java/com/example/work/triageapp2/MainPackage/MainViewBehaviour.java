@@ -1,9 +1,6 @@
-package com.example.work.triageapp2.MainPackage.Activities;
+package com.example.work.triageapp2.MainPackage;
 
 import android.view.View;
-
-import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
-import com.example.work.triageapp2.Bluetooth.SoldierStatus;
 
 /**
  * Created by BoryS on 26.10.2017.
@@ -18,8 +15,6 @@ public class MainViewBehaviour extends Thread{
 
     public MainViewBehaviour(MainActivity mainActivity){
         this.mainActivity = mainActivity;
-//        triagePanel = (Button) mainActivity.findViewById(R.id.triageButton);
-
 
         running = true;
     }
@@ -28,11 +23,11 @@ public class MainViewBehaviour extends Thread{
     @Override
     public void run() {
         while(running){
-            managerHeartRateView();
+            manageHeartRateView();
         }
     }
 
-    public void managerHeartRateView(){
+    public void manageHeartRateView(){
         if(SoldierStatus.isHeartRateActive){
             if(!isHrIconEnabled){
                 mainActivity.setDisabledOrNotHrView(true);

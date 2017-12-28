@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.MainPackage.Fragments;
+package com.example.work.triageapp2.MainPackage;
 
 
 import android.graphics.Paint;
@@ -20,7 +20,6 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
-import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
 import com.example.work.triageapp2.R;
 
 import java.util.ArrayList;
@@ -76,7 +75,7 @@ public class EmgFragment extends Fragment implements OnBackPressedListener, IfMa
         plot.getGraph().position(10,HorizontalPositioning.ABSOLUTE_FROM_LEFT,35,VerticalPositioning.ABSOLUTE_FROM_TOP);
 
         plot.setRangeBoundaries(0, 400, BoundaryMode.FIXED);
-        plot.setDomainBoundaries(0, MainActivity.PLOT_SIZE, BoundaryMode.FIXED);
+        plot.setDomainBoundaries(0, PlotEMG.PLOT_SIZE, BoundaryMode.FIXED);
         plot.setDomainStep(StepMode.INCREMENT_BY_VAL,100);
         plot.setRangeStepValue(9);
         // reduce the number of range labels
@@ -92,7 +91,7 @@ public class EmgFragment extends Fragment implements OnBackPressedListener, IfMa
 
     public void refreshPlot(){
         XYSeries series1 = new SimpleXYSeries(
-                ((MainActivity)getActivity()).getPlotList(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
+                ((MainActivity)getActivity()).plotEMG.getPlotList(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
         MyFadeFormatter formatter =new MyFadeFormatter(2000);
         formatter.setLegendIconEnabled(false);
         plot.clear();

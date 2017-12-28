@@ -11,7 +11,6 @@ import android.view.View;
 
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.Bluetooth.Device;
-import com.example.work.triageapp2.MainPackage.Activities.MainActivity;
 
 import static android.content.ContentValues.TAG;
 
@@ -53,10 +52,10 @@ public class Receivers {
 
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 Log.i(TAG, device.getName() + "    Bluetooth Device Connected");
-                for (Device dC : mainActivity.connection.listOfDevices) {
+                for (Device dC : mainActivity.bluetoothManagement.connection.listOfDevices) {
 
                     if (device.getName().equals(dC.deviceName) && device.getAddress().equals(dC.deviceAddress)) {
-                        mainActivity.connection.listOfConnectedDevices.add(dC);
+                        mainActivity.bluetoothManagement.connection.listOfConnectedDevices.add(dC);
                         final Intent intent2 = new Intent("LIST_REFRESH");
                         mainActivity.getApplicationContext().sendBroadcast(intent2);
                     }
@@ -65,9 +64,9 @@ public class Receivers {
             }
             if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 Log.i(TAG, device.getName() + "    Bluetooth Device Disconnected");
-                for(Device dC : mainActivity.connection.listOfConnectedDevices){
+                for(Device dC : mainActivity.bluetoothManagement.connection.listOfConnectedDevices){
                     if(device.getName().equals(dC.deviceName) && device.getAddress().equals(dC.deviceAddress)){
-                      mainActivity.connection.listOfConnectedDevices.remove(dC);
+                      mainActivity.bluetoothManagement.connection.listOfConnectedDevices.remove(dC);
                         final Intent intent2 = new Intent("LIST_REFRESH");
                         mainActivity.getApplicationContext().sendBroadcast(intent2);
                     }
@@ -81,12 +80,12 @@ public class Receivers {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                mainActivity.isGattConnected = true;
+                mainActivity.bluetoothManagement.isGattConnected = true;
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                mainActivity.isGattConnected = false;
+                mainActivity.bluetoothManagement.isGattConnected = false;
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
-                mainActivity.displayGattServices(mainActivity.mBluetoothLeService.getSupportedGattServices());
+                mainActivity.bluetoothManagement.displayGattServices(mainActivity.bluetoothManagement.mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
               //  mainActivity.readAndNotifySelectedCharacteristic();
             }

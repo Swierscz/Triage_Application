@@ -15,10 +15,7 @@ public class ManualAssesment {
 
     public ManualAssesment(Context context) {
         this.context = context;
-
-        Dialog dialog = onCreateDialogSingleChoice();
-        dialog.show();
-
+        assessSoldierCondition();
     }
 
     public Dialog onCreateDialogSingleChoice() {
@@ -44,6 +41,11 @@ public class ManualAssesment {
                     }
                 });
         return builder.create();
+    }
+
+    public void assessSoldierCondition(){
+        Dialog dialog = onCreateDialogSingleChoice();
+        dialog.show();
     }
 
 

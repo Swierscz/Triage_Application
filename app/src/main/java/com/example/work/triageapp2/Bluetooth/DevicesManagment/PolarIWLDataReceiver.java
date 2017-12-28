@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import com.example.work.triageapp2.Bluetooth.DeviceConnectionClock;
-import com.example.work.triageapp2.Bluetooth.SoldierStatus;
+import com.example.work.triageapp2.MainPackage.SoldierStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,47 +33,52 @@ public class PolarIWLDataReceiver extends Thread {
     }
 
 
-    public void run(){
+    public void run() {
         mmBuffer = new byte[1024];
-        int numBytes; // bytes returned from read()
+        int numBytes = 0; // bytes returned from read()
         // Keep listening to the InputStream until an exception occurs.
         while (true) {
-            try {
-
-                //===================================================
-
-                numBytes = mmInStream.read(mmBuffer);
-
-                final StringBuilder sb = new StringBuilder();
-                sb.append("Received ").append(numBytes).append(" bytes: ");
-
-                if (numBytes == 7) {
-                    //  if((int) mmBuffer[2] == 14) {
-                    for (int i = 0; i < numBytes; i++) {
-                        sb.append(Integer.toHexString(((int) mmBuffer[i]) & 0xff)).append(", ");
-                    }
-                    sb.append(Integer.toHexString(((int) mmBuffer[4] * 2) & 0xff)).append(", ");
-                    Log.v("Tetno: ", "" + mmBuffer[4]);
-                    Log.v("result", sb.toString());
-
-
-                    SoldierStatus.heartRate = mmBuffer[4];
-                    if(String.valueOf(mmBuffer[4]).equals("0")){
-                        SoldierStatus.isHeartRateActive = false;
-                    }
-                    else{
-                        DeviceConnectionClock.resetTimerForHeartRate();
-                        if(SoldierStatus.isHeartRateActive == false)
-                            SoldierStatus.isHeartRateActive = true;
-                    }
-                }
-                //  }
-            } catch (IOException e) {
-                System.out.println("Polaczenia input zostalo zerwane");
-                // Log.d(TAG, "Input stream was disconnected", e);
-                break;
-            }
+          try {
+              readAndDecodeStreamData(numBytes);
+              setStatusForHeartRate();
+          } catch (IOException e) {
+              e.printStackTrace();
+              System.out.println("Polaczenia input zostalo zerwane");
+          }
         }
+    }
+
+
+    public void readAndDecodeStreamData(int numBytes) throws IOException {
+        numBytes = mmInStream.read(mmBuffer);
+
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Received ").append(numBytes).append(" bytes: ");
+
+        if (numBytes == 7) {
+            for (int i = 0; i < numBytes; i++) {
+                sb.append(Integer.toHexString(((int) mmBuffer[i]) & 0xff)).append(", ");
+            }
+            sb.append(Integer.toHexString(((int) mmBuffer[4] * 2) & 0xff)).append(", ");
+            Log.v("Tetno: ", "" + mmBuffer[4]);
+            Log.v("result", sb.toString());
+        }
+    }
+
+    public void setStatusForHeartRate(){
+        SoldierStatus.heartRate = mmBuffer[4];
+        if(String.valueOf(mmBuffer[4]).equals("0")){
+            SoldierStatus.isHeartRateActive = false;
+        }
+        else{
+            DeviceConnectionClock.resetTimerForHeartRate();
+            if(SoldierStatus.isHeartRateActive == false)
+                SoldierStatus.isHeartRateActive = true;
+        }
+    }
+
+    public void setInputStream(){
+
     }
 
     public void cancel() {

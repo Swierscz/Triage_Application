@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.Bluetooth;
+package com.example.work.triageapp2.MainPackage;
 
 /**
  * Created by BoryS on 26.10.2017.

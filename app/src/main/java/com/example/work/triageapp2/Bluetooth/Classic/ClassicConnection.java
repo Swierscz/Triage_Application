@@ -33,12 +33,15 @@ public class ClassicConnection extends Thread {
         this.mBluetoothAdapter = mBluetoothAdapter;
         this.deviceName = deviceName;
         this.deviceAddress = deviceAddress;
-
     }
 
     public void run(){
+        setDevice();
+        connectSocket();
+    }
+
+    public void setDevice(){
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-//        Log.i(this.getClass().getName()+"_run()","Thread Started");
         if(pairedDevices.size() > 0){
             for(BluetoothDevice device : pairedDevices){
                 if(deviceName.equals(device.getName()) && deviceAddress.equals(device.getAddress())){
@@ -47,17 +50,15 @@ public class ClassicConnection extends Thread {
                 }
             }
         }
+    }
 
+    public void connectSocket(){
         try {
-            // Get a BluetoothSocket to connect with the given BluetoothDevice.
-            // MY_UUID is the app's UUID string, also used in the server code.
             mmSocket = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
         } catch (IOException e) {
             Log.e(this.getClass().getName()+"_run()_socketConnection", "Socket's create() method failed", e);
         }
 
-
-        // Cancel discovery because it otherwise slows down the connection.
         mBluetoothAdapter.cancelDiscovery();
         if(mmSocket.isConnected())
             try {
@@ -91,11 +92,7 @@ public class ClassicConnection extends Thread {
                 System.out.println("b");
                 Log.e("", "Couldn't establish Bluetooth connection!");
             }
-
-            // The connection attempt succeeded. Perform work associated with
-            // the connection in a separate thread.
         }
-
     }
 
 }
