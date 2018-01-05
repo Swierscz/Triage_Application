@@ -3,6 +3,7 @@ package com.example.work.triageapp2.Bluetooth.DevicesManagment;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+import com.example.work.triageapp2.Bluetooth.Classic.ClassicConnection;
 import com.example.work.triageapp2.Bluetooth.DeviceConnectionClock;
 import com.example.work.triageapp2.MainPackage.SoldierStatus;
 
@@ -17,11 +18,14 @@ import static android.content.ContentValues.TAG;
  */
 
 public class PolarIWLDataReceiver extends Thread {
+    ClassicConnection classicConnection;
     public byte[] mmBuffer; // mmBuffer store for the stream
     public final BluetoothSocket mmSocket;
     public final InputStream mmInStream;
+    public boolean running = true;
 
-    public PolarIWLDataReceiver(BluetoothSocket mmSocket){
+    public PolarIWLDataReceiver(ClassicConnection classicConnection, BluetoothSocket mmSocket){
+        this.classicConnection = classicConnection;
         this.mmSocket = mmSocket;
         InputStream tmpIn = null;
         try {
@@ -37,7 +41,7 @@ public class PolarIWLDataReceiver extends Thread {
         mmBuffer = new byte[1024];
         int numBytes = 0; // bytes returned from read()
         // Keep listening to the InputStream until an exception occurs.
-        while (true) {
+        while (running) {
           try {
               readAndDecodeStreamData(numBytes);
               setStatusForHeartRate();
@@ -71,6 +75,7 @@ public class PolarIWLDataReceiver extends Thread {
             SoldierStatus.isHeartRateActive = false;
         }
         else{
+            classicConnection.connection.bluetoothManagement.getMainActivity().setHr(mmBuffer[4]);
             DeviceConnectionClock.resetTimerForHeartRate();
             if(SoldierStatus.isHeartRateActive == false)
                 SoldierStatus.isHeartRateActive = true;

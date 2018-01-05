@@ -2,11 +2,14 @@ package com.example.work.triageapp2.MainPackage;
 
 import android.view.View;
 
+import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
+
 /**
  * Created by BoryS on 26.10.2017.
  */
 
 public class MainViewBehaviour extends Thread{
+    private final static String TAG = MainViewBehaviour.class.getSimpleName();
     MainActivity mainActivity;
 
 
@@ -45,7 +48,7 @@ public class MainViewBehaviour extends Thread{
 
     public void manageHeartRateBeep() {
         int heartRate = SoldierStatus.heartRate;
-        if (heartRate != 0) {
+        if (heartRate > 0) {
             int breakTime = 60000 / heartRate;
             try {
                 Thread.sleep(breakTime);

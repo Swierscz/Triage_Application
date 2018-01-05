@@ -12,6 +12,8 @@ import android.view.View;
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.Bluetooth.Device;
 
+import java.lang.reflect.Method;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -19,6 +21,7 @@ import static android.content.ContentValues.TAG;
  */
 
 public class Receivers {
+    private final static String TAG = Receivers.class.getSimpleName();
     private MainActivity mainActivity;
 
     public Receivers(MainActivity mainActivity){
@@ -43,38 +46,6 @@ public class Receivers {
     };
 
 
-
-    private final BroadcastReceiver deviceConnectionReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                Log.i(TAG, device.getName() + "    Bluetooth Device Connected");
-                for (Device dC : mainActivity.bluetoothManagement.connection.listOfDevices) {
-
-                    if (device.getName().equals(dC.deviceName) && device.getAddress().equals(dC.deviceAddress)) {
-                        mainActivity.bluetoothManagement.connection.listOfConnectedDevices.add(dC);
-                        final Intent intent2 = new Intent("LIST_REFRESH");
-                        mainActivity.getApplicationContext().sendBroadcast(intent2);
-                    }
-                }
-
-            }
-            if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                Log.i(TAG, device.getName() + "    Bluetooth Device Disconnected");
-                for(Device dC : mainActivity.bluetoothManagement.connection.listOfConnectedDevices){
-                    if(device.getName().equals(dC.deviceName) && device.getAddress().equals(dC.deviceAddress)){
-                      mainActivity.bluetoothManagement.connection.listOfConnectedDevices.remove(dC);
-                        final Intent intent2 = new Intent("LIST_REFRESH");
-                        mainActivity.getApplicationContext().sendBroadcast(intent2);
-                    }
-                }
-            }
-        }
-    };
-
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -92,14 +63,6 @@ public class Receivers {
         }
     };
 
-    private IntentFilter createIntentFilterForDeviceConnectionReceiver(){
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        return filter;
-    }
-
     private static IntentFilter createGATTIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
@@ -114,13 +77,11 @@ public class Receivers {
     public void registerReceivers(){
         mainActivity.registerReceiver(bluetoothStateChangeReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
         mainActivity.registerReceiver(mGattUpdateReceiver, createGATTIntentFilter());
-        mainActivity.registerReceiver(deviceConnectionReceiver,createIntentFilterForDeviceConnectionReceiver());
     }
 
     public void unregisterReceivers(){
         mainActivity.unregisterReceiver(bluetoothStateChangeReceiver);
         mainActivity.unregisterReceiver(mGattUpdateReceiver);
-        mainActivity.unregisterReceiver(deviceConnectionReceiver);
     }
     //endregion
 

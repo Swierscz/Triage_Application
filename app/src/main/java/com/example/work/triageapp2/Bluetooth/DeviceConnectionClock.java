@@ -1,5 +1,6 @@
 package com.example.work.triageapp2.Bluetooth;
 
+import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.MainPackage.SoldierStatus;
 
 /**
@@ -7,7 +8,7 @@ import com.example.work.triageapp2.MainPackage.SoldierStatus;
  */
 
 public class DeviceConnectionClock extends Thread {
-
+    private final static String TAG = DeviceConnectionClock.class.getSimpleName();
     public static volatile int heartRateConnectionTimeInSeconds;
 
     public DeviceConnectionClock(){

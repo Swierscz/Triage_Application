@@ -20,6 +20,7 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.R;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 
 public class EmgFragment extends Fragment implements OnBackPressedListener, IfMainScreenCheck {
-
+    private final static String TAG = EmgFragment.class.getSimpleName();
     private XYPlot plot;
 
     public static class MyFadeFormatter extends AdvancedLineAndPointRenderer.Formatter {
@@ -109,7 +110,7 @@ public class EmgFragment extends Fragment implements OnBackPressedListener, IfMa
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("EmgBean Plot");
+        getActivity().setTitle("Emg Plot");
         initPlot();
         refreshPlot();
 

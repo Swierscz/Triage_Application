@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.MainPackage;
+package com.example.work.triageapp2.Bluetooth;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ import com.example.work.triageapp2.R;
  */
 
 public class CustomBluetoothListAdapter extends ArrayAdapter {
-
+    private final static String TAG = CustomBluetoothListAdapter.class.getSimpleName();
     private final Activity context;
     private final Device[] devices;
     private Integer imgid;
@@ -36,10 +36,18 @@ public class CustomBluetoothListAdapter extends ArrayAdapter {
         TextView extratxt = (TextView) rowView.findViewById(R.id.listBluetoothExtrasTextView);
 
         txtTitle.setText(devices[position].deviceName);
-        if(devices[position].isConnected()){
-            imageView.setImageResource(devices[position].connectedImage);
+        if(!devices[position].isFound()){
+            imageView.setImageResource(devices[position].notFoundImage);
+        }
+        else if(devices[position].isPaired()) {
+
+             if (devices[position].isConnected()) {
+                imageView.setImageResource(devices[position].connectedImage);
+            } else {
+                imageView.setImageResource(devices[position].disconnectedImage);
+            }
         }else{
-            imageView.setImageResource(devices[position].disconnectedImage);
+            imageView.setImageResource(devices[position].nonPairedImage);
         }
 
         extratxt.setText("Address: "+devices[position].deviceAddress);

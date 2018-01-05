@@ -10,21 +10,23 @@ import com.example.work.triageapp2.Bluetooth.DevicesManagment.PolarIWLDataReceiv
  */
 
 public class ClassicConnectionManager {
+    private final static String TAG = ClassicConnectionManager.class.getSimpleName();
+    ClassicConnection classicConnection;
     public final BluetoothSocket mmSocket;
+    public PolarIWLDataReceiver polarIWLDataReceiver;
 
-    public ClassicConnectionManager(BluetoothSocket mmSocket, BluetoothDevice device){
+    public ClassicConnectionManager(ClassicConnection classicConnection,BluetoothSocket mmSocket, BluetoothDevice device){
+        this.classicConnection = classicConnection;
         this.mmSocket = mmSocket;
         if(device.getName().equals("Polar iWL")){
             polarIWLFunction();
         }
-
-
     }
 
     public void polarIWLFunction(){
-        PolarIWLDataReceiver deviceReceiverThread =
-        new PolarIWLDataReceiver(mmSocket);
-        deviceReceiverThread.start();
+        polarIWLDataReceiver =
+        new PolarIWLDataReceiver(classicConnection,mmSocket);
+        polarIWLDataReceiver.start();
     }
 
 

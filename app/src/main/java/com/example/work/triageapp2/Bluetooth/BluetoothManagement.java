@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public class BluetoothManagement {
-    final static String TAG = MainActivity.class.getSimpleName();
+    final static String TAG = BluetoothManagement.class.getSimpleName();
 
     public MainActivity getMainActivity() {
         return mainActivity;
@@ -36,7 +36,7 @@ public class BluetoothManagement {
 
     MainActivity mainActivity;
     public Connection connection;
-    DeviceConnectionClock deviceConnectionClock;
+
 
     public BluetoothAdapter mBluetoothAdapter;
     public BluetoothLeService mBluetoothLeService;
@@ -86,9 +86,8 @@ public class BluetoothManagement {
 
     }
     private void initDeviceClock(){
-        deviceConnectionClock = new DeviceConnectionClock();
+        DeviceConnectionClock deviceConnectionClock = new DeviceConnectionClock();
         deviceConnectionClock.start();
-
     }
 
     private void setPermissionForBlueetoothUse() {

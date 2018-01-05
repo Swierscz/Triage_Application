@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity
         hrText = (TextView) findViewById(R.id.hrTextView);
         hrTextLabel = (TextView) findViewById(R.id.hrTextViewLabel);
         triageButton = (Button) findViewById(R.id.triageButton);
-        setBluetoothIconVisibility();
     }
 
     private void initComponents(){
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity
         initAndHandleEmgButton();
         initReceivers();
         initDataBase();
-
+        setBluetoothIconVisibility();
 
     }
 
@@ -169,6 +168,7 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         receivers.unregisterReceivers();
+        unregisterReceiver(bluetoothManagement.connection.mReceiver);
         bluetoothManagement.unbindCurrentService();
         DBAdapter.deleteDataBase(getApplicationContext());
     }

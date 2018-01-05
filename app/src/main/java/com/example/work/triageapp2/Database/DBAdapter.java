@@ -15,6 +15,7 @@ import java.io.File;
  */
 
 public class DBAdapter {
+
     private SQLiteDatabase db;
     private Context context;
     private DatabaseHelper dbHelper;
@@ -96,14 +97,14 @@ public class DBAdapter {
         return db.query(DB_MUSCLE_EMG_TABLE, columns, null, null, null, null, null);
     }
 
-    public EmgBean getEmg(long id) {
+    public Emg getEmg(long id) {
         String[] columns = {KEY_ID, EMG};
         String where = KEY_ID + "=" + id;
         Cursor cursor = db.query(DB_MUSCLE_EMG_TABLE, columns, where, null, null, null, null);
-        EmgBean task = null;
+        Emg task = null;
         if(cursor != null && cursor.moveToFirst()) {
             double emgMeasure = cursor.getDouble(EMG_COLUMN);
-            task = new EmgBean(id, emgMeasure);
+            task = new Emg(id, emgMeasure);
         }
         return task;
     }

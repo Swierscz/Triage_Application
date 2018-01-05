@@ -10,7 +10,7 @@ import android.content.DialogInterface;
  */
 
 public class ManualAssesment {
-
+    private final static String TAG = ManualAssesment.class.getSimpleName();
     Context context;
 
     public ManualAssesment(Context context) {

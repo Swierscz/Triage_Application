@@ -8,9 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.R;
 
 public class LoginPageActivity extends AppCompatActivity {
+    private final static String TAG = LoginPageActivity.class.getSimpleName();
     Button confirmButton;
     EditText userNameEditText, passwordEditText;
 

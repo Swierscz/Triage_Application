@@ -33,6 +33,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.work.triageapp2.Bluetooth.Connection;
+import com.example.work.triageapp2.Bluetooth.Device;
 import com.example.work.triageapp2.MainPackage.MainActivity;
 import com.example.work.triageapp2.Bluetooth.DeviceConnectionClock;
 import com.example.work.triageapp2.Database.DBAdapter;
@@ -102,6 +104,16 @@ public class BluetoothLeService extends IntentService {
 
                 broadcastUpdate(intentAction);
 
+                final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
+                for(Device d : Connection.listOfAllDevices){
+                    if(device.getAddress().equals(d.deviceAddress)){
+                        d.setConnected(true);
+                        Intent intent1 = new Intent();
+                        intent1.setAction("REFRESH_DEVICE_LIST");
+                        mainActivity.sendBroadcast(intent1);
+                    }
+                }
+
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
                 Log.i(TAG, "Attempting to start service discovery:" +
@@ -110,6 +122,16 @@ public class BluetoothLeService extends IntentService {
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 intentAction = ACTION_GATT_DISCONNECTED;
                 mConnectionState = STATE_DISCONNECTED;
+
+                final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
+                for(Device d : Connection.listOfAllDevices){
+                    if(device.getAddress().equals(d.deviceAddress)){
+                        d.setConnected(false);
+                        Intent intent1 = new Intent();
+                        intent1.setAction("REFRESH_DEVICE_LIST");
+                        mainActivity.sendBroadcast(intent1);
+                    }}
+
                 Log.i(TAG, "Disconnected from GATT server.");
                 broadcastUpdate(intentAction);
             }
@@ -185,7 +207,7 @@ public class BluetoothLeService extends IntentService {
                 SoldierStatus.isHeartRateActive = true;
         }
         else if(UUID_MYOWARE_MUSCLE_MEASURMENT.equals(characteristic.getUuid())){
-//            float f1 = formatIncomingDataForMuscleDevice(characteristic);
+
             int flag = characteristic.getProperties();
             int format = -1;
             if ((flag & 0x01) != 0) {
@@ -195,9 +217,6 @@ public class BluetoothLeService extends IntentService {
             }
             final int muscleRate = characteristic.getIntValue(format, 1);
             Log.i(TAG,"Muscle measured value is: " +  String.valueOf(muscleRate));
-//            addEmgToDatabase(f1,200);
-//            final Intent intent2 = new Intent("EMG_RECEIVED");
-//            getApplicationContext().sendBroadcast(intent2);
 
             mainActivity.plotEMG.fillPlotValues(muscleRate);
             if(mainActivity.getEmgFragment()!=null){
@@ -213,6 +232,12 @@ public class BluetoothLeService extends IntentService {
         sendBroadcast(intent);
     }
     //endregion
+//            float f1 = formatIncomingDataForMuscleDevice(characteristic);
+    //            Log.i(TAG,"Muscle measured value is: " +  String.valueOf(muscleRate));
+//            addEmgToDatabase(f1,200);
+//            final Intent intent2 = new Intent("EMG_RECEIVED");
+//            getApplicationContext().sendBroadcast(intent2);
+
 
     //region _____standard service functions_____
     public class LocalBinder extends Binder {
@@ -295,6 +320,7 @@ public class BluetoothLeService extends IntentService {
         }
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+
         if (device == null) {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;
@@ -314,7 +340,8 @@ public class BluetoothLeService extends IntentService {
      * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
      * callback.
      */
-    public void disconnect() {
+    public void disconnect(String address) {
+
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
