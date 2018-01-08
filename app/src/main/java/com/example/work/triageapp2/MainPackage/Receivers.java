@@ -28,7 +28,7 @@ public class Receivers {
         this.mainActivity = mainActivity;
     }
     
-
+//MainActivity
     private final BroadcastReceiver bluetoothStateChangeReceiver = new BroadcastReceiver() {
         public void onReceive (Context context, Intent intent) {
             String action = intent.getAction();
@@ -45,7 +45,7 @@ public class Receivers {
 
     };
 
-
+//BleService
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -62,6 +62,10 @@ public class Receivers {
             }
         }
     };
+//Calibration
+
+
+
 
     private static IntentFilter createGATTIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();

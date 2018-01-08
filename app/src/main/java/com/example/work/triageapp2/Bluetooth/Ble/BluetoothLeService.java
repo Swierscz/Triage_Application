@@ -35,8 +35,9 @@ import android.util.Log;
 
 import com.example.work.triageapp2.Bluetooth.Connection;
 import com.example.work.triageapp2.Bluetooth.Device;
+import com.example.work.triageapp2.MainPackage.CalibrationFragment;
 import com.example.work.triageapp2.MainPackage.MainActivity;
-import com.example.work.triageapp2.Bluetooth.DeviceConnectionClock;
+import com.example.work.triageapp2.Bluetooth.StatusConnectionClock;
 import com.example.work.triageapp2.Database.DBAdapter;
 import com.example.work.triageapp2.MainPackage.SoldierStatus;
 
@@ -101,7 +102,6 @@ public class BluetoothLeService extends IntentService {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 intentAction = ACTION_GATT_CONNECTED;
                 mConnectionState = STATE_CONNECTED;
-
                 broadcastUpdate(intentAction);
 
                 final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
@@ -109,8 +109,9 @@ public class BluetoothLeService extends IntentService {
                     if(device.getAddress().equals(d.deviceAddress)){
                         d.setConnected(true);
                         Intent intent1 = new Intent();
-                        intent1.setAction("REFRESH_DEVICE_LIST");
+                        intent1.setAction(CalibrationFragment.REFRESH_DEVICE_LIST_EVENT);
                         mainActivity.sendBroadcast(intent1);
+                        Log.i(TAG,"");
                     }
                 }
 
@@ -128,7 +129,7 @@ public class BluetoothLeService extends IntentService {
                     if(device.getAddress().equals(d.deviceAddress)){
                         d.setConnected(false);
                         Intent intent1 = new Intent();
-                        intent1.setAction("REFRESH_DEVICE_LIST");
+                        intent1.setAction(CalibrationFragment.REFRESH_DEVICE_LIST_EVENT);
                         mainActivity.sendBroadcast(intent1);
                     }}
 
@@ -202,7 +203,7 @@ public class BluetoothLeService extends IntentService {
             SoldierStatus.heartRate = heartRate;
             Log.i(TAG,"heartRate is: " + String.valueOf(heartRate) );
             mainActivity.setHr(heartRate);
-            DeviceConnectionClock.resetTimerForHeartRate();
+            StatusConnectionClock.resetTimerForHeartRate();
             if(SoldierStatus.isHeartRateActive == false)
                 SoldierStatus.isHeartRateActive = true;
         }
@@ -216,7 +217,7 @@ public class BluetoothLeService extends IntentService {
                 format = BluetoothGattCharacteristic.FORMAT_UINT8;
             }
             final int muscleRate = characteristic.getIntValue(format, 1);
-            Log.i(TAG,"Muscle measured value is: " +  String.valueOf(muscleRate));
+//            Log.i(TAG,"Muscle measured value is: " +  String.valueOf(muscleRate));
 
             mainActivity.plotEMG.fillPlotValues(muscleRate);
             if(mainActivity.getEmgFragment()!=null){

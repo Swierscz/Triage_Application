@@ -27,10 +27,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     final static String TAG = MainActivity.class.getSimpleName();
-    NavigationView navigationView;
-
-    MainViewBehaviour mainViewBehaviour;
-    public DBAdapter dbAdapter;
+    private NavigationView navigationView;
+    private MainViewBehaviour mainViewBehaviour;
+    private  DBAdapter dbAdapter;
     EmgFragment emgFragment = null;
 
     public BluetoothManagement bluetoothManagement;
@@ -194,7 +193,6 @@ public class MainActivity extends AppCompatActivity
                 }
                 setBackgroundComponentVisibility(false);
                 setIsTriageScreenVisible(false);
-
                 fragment = new CalibrationFragment();
                 replaceFragment(fragment, "CALIBRATION_FRAGMENT");
                 break;
@@ -283,7 +281,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void setDisabledOrNotHrView(boolean b){
+    public void setIsHrViewHasWholeHeartImage(boolean b){
         final boolean tempBool=b;
         runOnUiThread(new Runnable() {
             @Override
@@ -297,7 +295,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void hideOrShowHrView(boolean b){
+    public void setIsHrViewShouldBeVisible(boolean b){
         final boolean tempBool=b;
         runOnUiThread(new Runnable() {
             @Override
@@ -330,4 +328,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public DBAdapter getDbAdapter() {
+        return dbAdapter;
+    }
 }

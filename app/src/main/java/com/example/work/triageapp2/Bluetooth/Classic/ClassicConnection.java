@@ -29,7 +29,7 @@ public class ClassicConnection extends Thread {
     BluetoothDevice mmDevice;
 
     String deviceName;
-    String deviceAddress;
+    public String deviceAddress;
 
 
 
@@ -85,9 +85,8 @@ public class ClassicConnection extends Thread {
                     device.setConnected(true);
                 }
             }
-            Intent intent1 = new Intent();
-            intent1.setAction("REFRESH_DEVICE_LIST");
-            connection.bluetoothManagement.getMainActivity().sendBroadcast(intent1);
+
+            connection.sendListRefreshEvent();
 
             Log.e("", "Connected");
             classicConnectionManager = new ClassicConnectionManager(this,mmSocket,mmDevice);
@@ -113,9 +112,7 @@ public class ClassicConnection extends Thread {
                     device.setConnected(false);
                 }
             }
-            Intent intent1 = new Intent();
-            intent1.setAction("REFRESH_DEVICE_LIST");
-            connection.bluetoothManagement.getMainActivity().sendBroadcast(intent1);
+            connection.sendListRefreshEvent();
             mmSocket.close();
             Log.i(TAG,"Socket have been closed");
         } catch (IOException e) {

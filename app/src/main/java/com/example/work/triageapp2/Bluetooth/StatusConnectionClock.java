@@ -1,19 +1,17 @@
 package com.example.work.triageapp2.Bluetooth;
 
-import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.MainPackage.SoldierStatus;
 
 /**
  * Created by BoryS on 26.10.2017.
  */
 
-public class DeviceConnectionClock extends Thread {
-    private final static String TAG = DeviceConnectionClock.class.getSimpleName();
+public class StatusConnectionClock extends Thread {
+    private final static String TAG = StatusConnectionClock.class.getSimpleName();
     public static volatile int heartRateConnectionTimeInSeconds;
 
-    public DeviceConnectionClock(){
+    public StatusConnectionClock(){
         heartRateConnectionTimeInSeconds = 0;
-
     }
 
     @Override
@@ -34,6 +32,7 @@ public class DeviceConnectionClock extends Thread {
         if(heartRateConnectionTimeInSeconds == 20){
             SoldierStatus.isHeartRateActive = false;
             SoldierStatus.heartRate = 0;
+
         }
 
         try {

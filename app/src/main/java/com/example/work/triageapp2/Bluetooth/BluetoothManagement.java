@@ -61,7 +61,7 @@ public class BluetoothManagement {
             }
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothLeService.connect(mDeviceAddress);
-            mBluetoothLeService.setDbAdapter(mainActivity.dbAdapter);
+            mBluetoothLeService.setDbAdapter(mainActivity.getDbAdapter());
         }
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
@@ -86,8 +86,8 @@ public class BluetoothManagement {
 
     }
     private void initDeviceClock(){
-        DeviceConnectionClock deviceConnectionClock = new DeviceConnectionClock();
-        deviceConnectionClock.start();
+        StatusConnectionClock statusConnectionClock = new StatusConnectionClock();
+        statusConnectionClock.start();
     }
 
     private void setPermissionForBlueetoothUse() {

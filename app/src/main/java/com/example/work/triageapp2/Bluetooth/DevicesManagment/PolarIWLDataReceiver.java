@@ -1,10 +1,14 @@
 package com.example.work.triageapp2.Bluetooth.DevicesManagment;
 
 import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.util.Log;
 
 import com.example.work.triageapp2.Bluetooth.Classic.ClassicConnection;
-import com.example.work.triageapp2.Bluetooth.DeviceConnectionClock;
+import com.example.work.triageapp2.Bluetooth.Connection;
+import com.example.work.triageapp2.Bluetooth.Device;
+import com.example.work.triageapp2.Bluetooth.StatusConnectionClock;
+import com.example.work.triageapp2.MainPackage.CalibrationFragment;
 import com.example.work.triageapp2.MainPackage.SoldierStatus;
 
 import java.io.IOException;
@@ -48,10 +52,23 @@ public class PolarIWLDataReceiver extends Thread {
           } catch (IOException e) {
               e.printStackTrace();
               System.out.println("Polaczenia input zostalo zerwane");
+              setConnectedAndSendRefreshListEvent();
+              close();
+              running = false;
           }
         }
     }
 
+    public void setConnectedAndSendRefreshListEvent(){
+        for(Device d : Connection.listOfAllDevices) {
+            if (classicConnection.deviceAddress.equals(d.deviceAddress)) {
+                d.setConnected(false);
+                Intent intent1 = new Intent();
+                intent1.setAction(CalibrationFragment.REFRESH_DEVICE_LIST_EVENT);
+                classicConnection.connection.bluetoothManagement.getMainActivity().sendBroadcast(intent1);
+            }
+        }
+    }
 
     public void readAndDecodeStreamData(int numBytes) throws IOException {
         numBytes = mmInStream.read(mmBuffer);
@@ -76,7 +93,7 @@ public class PolarIWLDataReceiver extends Thread {
         }
         else{
             classicConnection.connection.bluetoothManagement.getMainActivity().setHr(mmBuffer[4]);
-            DeviceConnectionClock.resetTimerForHeartRate();
+            StatusConnectionClock.resetTimerForHeartRate();
             if(SoldierStatus.isHeartRateActive == false)
                 SoldierStatus.isHeartRateActive = true;
         }
@@ -86,7 +103,7 @@ public class PolarIWLDataReceiver extends Thread {
 
     }
 
-    public void cancel() {
+    public void close() {
         try {
             mmSocket.close();
         } catch (IOException e) {

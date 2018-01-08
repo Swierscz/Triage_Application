@@ -24,7 +24,6 @@ import android.widget.ListView;
 import com.example.work.triageapp2.Bluetooth.Connection;
 import com.example.work.triageapp2.Bluetooth.CustomBluetoothListAdapter;
 import com.example.work.triageapp2.Bluetooth.Device;
-import com.example.work.triageapp2.Database.DBAdapter;
 import com.example.work.triageapp2.R;
 
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ import java.util.Set;
 
 public class CalibrationFragment extends Fragment implements OnBackPressedListener, IfMainScreenCheck {
     private final static String TAG = CalibrationFragment.class.getSimpleName();
+    public final static String REFRESH_DEVICE_LIST_EVENT = "REFRESH_DEVICE_LIST_EVENT";
     Connection connection;
     private ListView listOfDevices;
     private ArrayAdapter<String> adapter;
@@ -43,7 +43,7 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
     private final BroadcastReceiver listRefreshReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals("REFRESH_DEVICE_LIST")) {
+            if (action.equals(REFRESH_DEVICE_LIST_EVENT)) {
                 refreshDeviceListViewAndSetListener();
             }
         }
@@ -64,12 +64,10 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("CalibrationFragment");
-        Log.i(TAG, "Constructor");
 
         connection = ((MainActivity) getActivity()).bluetoothManagement.getConnection();
         listOfDevices = (ListView) getActivity().findViewById(R.id.bluetoothDevicesList);
-
-        ((MainActivity) getActivity()).registerReceiver(listRefreshReceiver, new IntentFilter("REFRESH_DEVICE_LIST"));
+        ((MainActivity) getActivity()).registerReceiver(listRefreshReceiver, new IntentFilter(REFRESH_DEVICE_LIST_EVENT));
         setHasOptionsMenu(true);
         refreshDeviceListViewAndSetListener();
 
@@ -78,7 +76,6 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
-        //super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -106,8 +103,22 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
     public void refreshDeviceListViewAndSetListener() {
         Log.i(TAG, "refreshDeviceListViewAndSetListener function has started");
 
+        setPairingStatusByBondedDevicesList();
+
+        setListAdapter(connection.listOfAllDevices);
+        listOfDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    connection.stopDeviceConnectionClock();
+                    startOrStopConnection(i);
+                    connection.startDeviceConnectionClock();
+            }
+        });
+    }
+
+    public void setPairingStatusByBondedDevicesList(){
         for(Device d : connection.listOfAllDevices){
-            if(d.deviceKind.equals("CLASSIC")){
+            if(d.deviceKind.equals(Connection.TYPE_CLASSIC)){
                 if(isListOfDevicesContainAddress(connection.getmBluetoothAdapter().getBondedDevices(),d.deviceAddress)){
                     d.setPaired(true);
                 }else{
@@ -115,19 +126,6 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
                 }
             }
         }
-
-        setListAdapter(connection.listOfAllDevices);
-
-        listOfDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.i(TAG, "item has been clicked");
-
-                if (((MainActivity) getActivity()).bluetoothManagement.mBluetoothAdapter != null && ((MainActivity) getActivity()).bluetoothManagement.mBluetoothAdapter.isEnabled()) {
-                    startOrStopConnection(i);
-                }
-            }
-        });
     }
 
     public boolean isListOfDevicesContainAddress(Set<BluetoothDevice> list, String address){
@@ -140,28 +138,36 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
     }
 
     public void startOrStopConnection(int i) {
-        for (Device dC : connection.listOfAllDevices) {
-            if (listOfDevices.getItemAtPosition(i).equals(dC)) {
-                if(dC.isConnected()) {
-                    if (dC.deviceKind.equals("LE")) {
-                        if (dC.isConnected()) {
-                            ((MainActivity) getActivity()).bluetoothManagement.mBluetoothLeService.disconnect(dC.deviceAddress);
-                            refreshDeviceListViewAndSetListener();
-//                        ((MainActivity) getActivity()).unbindService(((MainActivity) getActivity()).bluetoothManagement.mServiceConnection);
-                        } else {
-//                        ((MainActivity) getActivity()).bluetoothManagement.connection.bindLEService(dC);
-                            ((MainActivity) getActivity()).bluetoothManagement.mBluetoothLeService.connect(dC.deviceAddress);
-                            refreshDeviceListViewAndSetListener();
-                        }
-                    } else if (dC.deviceKind.equals("CLASSIC")) {
-                        if (dC.isConnected()) {
-                            ((MainActivity) getActivity()).bluetoothManagement.connection.classicConnection.closeSocket();
-                        } else {
-                            ((MainActivity) getActivity()).bluetoothManagement.connection.createClassicConnection(dC);
-                        }
-                    }
+        if (((MainActivity) getActivity()).bluetoothManagement.mBluetoothAdapter != null && ((MainActivity) getActivity()).bluetoothManagement.mBluetoothAdapter.isEnabled()) {
+            for (Device dC : connection.listOfAllDevices) {
+                if (listOfDevices.getItemAtPosition(i).equals(dC)) {
+                   if (dC.deviceKind.equals(Connection.TYPE_LE)) {
+                       connectOrDisconnectWithLEDevice(dC);
+                   } else if (dC.deviceKind.equals(Connection.TYPE_CLASSIC)) {
+                       connectOrDisconnectWithClassicDevice(dC);
+                   }
                 }
             }
+        }
+    }
+
+    public void connectOrDisconnectWithLEDevice(Device dC){
+        if (dC.isConnected()) {
+            ((MainActivity) getActivity()).bluetoothManagement.mBluetoothLeService.disconnect(dC.deviceAddress);
+            refreshDeviceListViewAndSetListener();
+//          ((MainActivity) getActivity()).unbindService(((MainActivity) getActivity()).bluetoothManagement.mServiceConnection);
+        } else {
+//          ((MainActivity) getActivity()).bluetoothManagement.connection.bindLEService(dC);
+            ((MainActivity) getActivity()).bluetoothManagement.mBluetoothLeService.connect(dC.deviceAddress);
+            refreshDeviceListViewAndSetListener();
+        }
+    }
+
+    public void connectOrDisconnectWithClassicDevice(Device dC){
+        if (dC.isConnected()) {
+            ((MainActivity) getActivity()).bluetoothManagement.connection.classicConnection.closeSocket();
+        } else {
+            ((MainActivity) getActivity()).bluetoothManagement.connection.createClassicConnection(dC);
         }
     }
 
