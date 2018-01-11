@@ -8,16 +8,13 @@ import android.view.View;
 
 public class MainViewBehaviour extends Thread{
     private final static String TAG = MainViewBehaviour.class.getSimpleName();
-    MainActivity mainActivity;
-
-
-    boolean isHrIconEnabled = false;
+    private MainActivity mainActivity;
+    private boolean isHrIconEnabled = false;
     private boolean running;
     private int lastHr;
 
     public MainViewBehaviour(MainActivity mainActivity){
         this.mainActivity = mainActivity;
-
         running = true;
     }
 
@@ -29,14 +26,16 @@ public class MainViewBehaviour extends Thread{
         }
     }
 
-    public void manageHeartRateView(){
-        if(mainActivity.isTriageScreenVisible) {
+    private void manageHeartRateView(){
+        if(mainActivity.isTriageScreenVisible()) {
             if (SoldierStatus.isHeartRateActive) {
                 if (!isHrIconEnabled) {
                     mainActivity.setIsHrViewHasWholeHeartImage(true);
                     isHrIconEnabled = true;
                 }
-                manageHeartRateBeep();
+
+                simulateHeartRateBeep();
+
             } else {
                 if (isHrIconEnabled) {
                     mainActivity.setIsHrViewShouldBeVisible(true);
@@ -50,30 +49,34 @@ public class MainViewBehaviour extends Thread{
         }
     }
 
-    public void manageHeartRateBeep() {
+    private void simulateHeartRateBeep() {
         int heartRate = SoldierStatus.heartRate;
         if (heartRate > 50 && heartRate < 200) {
             lastHr = heartRate;
-            manageHeartRateViewForSpecifiedRate(heartRate);
+            manageBreakForHeartRateBeep(heartRate);
+            simulateSingleBeep();
         }else{
-            manageHeartRateViewForSpecifiedRate(lastHr);
+            manageBreakForHeartRateBeep(lastHr);
+            simulateSingleBeep();
         }
     }
 
-    public void manageHeartRateViewForSpecifiedRate(int rate){
+    private void manageBreakForHeartRateBeep(int rate){
         int breakTime = 60000 / (rate * 2);
         try {
             Thread.sleep(breakTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private void simulateSingleBeep(){
         if (mainActivity.getHrView().getVisibility()== View.VISIBLE) {
             mainActivity.setIsHrViewShouldBeVisible(false);
         } else {
             mainActivity.setIsHrViewShouldBeVisible(true);
         }
     }
-
 
     public boolean isRunning() {
         return running;

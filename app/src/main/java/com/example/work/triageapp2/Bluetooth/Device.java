@@ -1,9 +1,5 @@
 package com.example.work.triageapp2.Bluetooth;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.R;
 
 /**
@@ -12,27 +8,50 @@ import com.example.work.triageapp2.R;
 
 public class Device {
     private final static String TAG = Device.class.getSimpleName();
-    public String deviceName;
-    public String deviceAddress;
-    public String deviceKind;
-    boolean isFound = false;
-    boolean isConnected = false;
-    boolean isPaired = true;
+    private String name;
+    private String address;
+    private String kind;
+    private boolean isFound = false;
+    private boolean isConnected = false;
+    private boolean isPaired = true;
     public Integer connectedImage;
     public Integer disconnectedImage;
     public Integer notFoundImage;
     public Integer nonPairedImage;
 
-    public Device(String deviceName, String deviceAddress, String deviceKind){
-        this.deviceName = deviceName;
-        this.deviceAddress = deviceAddress;
-        this.deviceKind = deviceKind;
+    public Device(String name, String address, String kind){
+        this.name = name;
+        this.address = address;
+        this.kind = kind;
         notFoundImage = R.drawable.not_found_icon;
         connectedImage = R.mipmap.ok_icon;
         disconnectedImage = R.mipmap.no_icon;
         nonPairedImage = R.drawable.not_paired_icon;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String deviceName) {
+        this.name = deviceName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String deviceAddress) {
+        this.address = deviceAddress;
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String deviceKind) {
+        this.kind = deviceKind;
+    }
 
     public boolean isPaired() {
         return isPaired;

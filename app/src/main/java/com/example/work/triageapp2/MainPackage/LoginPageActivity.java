@@ -8,23 +8,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.R;
 
 public class LoginPageActivity extends AppCompatActivity {
     private final static String TAG = LoginPageActivity.class.getSimpleName();
-    Button confirmButton;
-    EditText userNameEditText, passwordEditText;
+    private Button confirmButton;
+    private EditText userNameEditText, passwordEditText;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
-        //!!!
-//        createMainActivity();
+        launchMainActivity();
         getSupportActionBar().hide();
-
 
         confirmButton = (Button)findViewById(R.id.confirmButtonMP);
         userNameEditText = (EditText) findViewById(R.id.userNameEditText);
@@ -33,21 +30,22 @@ public class LoginPageActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(userNameEditText.getText().toString().equals("")&&
-                        passwordEditText.getText().toString().equals("")) {
-                    Toast.makeText(getApplicationContext(),"Confirmed",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(getApplicationContext(),"Bad Password or Login",Toast.LENGTH_SHORT).show();
-                }
+                checkInputCorrectness();
             }
         });
-
-
     }
 
-    private void createMainActivity(){
+    private void checkInputCorrectness(){
+        if(userNameEditText.getText().toString().equals("")&&
+                passwordEditText.getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(),"Confirmed",Toast.LENGTH_SHORT).show();
+            launchMainActivity();
+        }else{
+            Toast.makeText(getApplicationContext(),"Bad Password or Login",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void launchMainActivity(){
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
     }

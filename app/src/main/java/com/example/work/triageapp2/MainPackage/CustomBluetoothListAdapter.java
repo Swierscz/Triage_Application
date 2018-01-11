@@ -1,4 +1,4 @@
-package com.example.work.triageapp2.Bluetooth;
+package com.example.work.triageapp2.MainPackage;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -35,7 +35,7 @@ public class CustomBluetoothListAdapter extends ArrayAdapter {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         TextView extratxt = (TextView) rowView.findViewById(R.id.listBluetoothExtrasTextView);
 
-        txtTitle.setText(devices[position].deviceName);
+        txtTitle.setText(devices[position].getName());
         if(!devices[position].isFound()){
             imageView.setImageResource(devices[position].notFoundImage);
         }
@@ -50,7 +50,7 @@ public class CustomBluetoothListAdapter extends ArrayAdapter {
             imageView.setImageResource(devices[position].nonPairedImage);
         }
 
-        extratxt.setText("Address: "+devices[position].deviceAddress);
+        extratxt.setText("Address: "+devices[position].getAddress());
         return rowView;
 
     };

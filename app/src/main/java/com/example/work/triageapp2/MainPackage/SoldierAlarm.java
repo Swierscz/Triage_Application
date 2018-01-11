@@ -8,13 +8,14 @@ import android.widget.Toast;
  */
 
 public class SoldierAlarm {
-    Context context;
+    private Context context;
 
     public SoldierAlarm(Context context) {
         this.context = context;
+        sendAlarm();
     }
 
-    public void sendAlarm(){
+    private void sendAlarm(){
         Toast.makeText(context, "Alarm został wysłany", Toast.LENGTH_SHORT).show();
     }
 

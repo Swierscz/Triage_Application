@@ -36,6 +36,8 @@ import android.util.Log;
 import com.example.work.triageapp2.Bluetooth.Connection;
 import com.example.work.triageapp2.Bluetooth.Device;
 import com.example.work.triageapp2.MainPackage.CalibrationFragment;
+import com.example.work.triageapp2.MainPackage.DataStorage;
+import com.example.work.triageapp2.MainPackage.EmgFragment;
 import com.example.work.triageapp2.MainPackage.MainActivity;
 import com.example.work.triageapp2.Bluetooth.StatusConnectionClock;
 import com.example.work.triageapp2.Database.DBAdapter;
@@ -60,10 +62,8 @@ public class BluetoothLeService extends IntentService {
     private BluetoothAdapter mBluetoothAdapter;
     private String mBluetoothDeviceAddress;
     private BluetoothGatt mBluetoothGatt;
-
-    private DBAdapter dbAdapter;
-
-    MainActivity mainActivity;
+    private DataStorage dataStorage;
+    private MainActivity mainActivity;
     public void setMainActivityReference(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
@@ -106,7 +106,7 @@ public class BluetoothLeService extends IntentService {
 
                 final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
                 for(Device d : Connection.listOfAllDevices){
-                    if(device.getAddress().equals(d.deviceAddress)){
+                    if(device.getAddress().equals(d.getAddress())){
                         d.setConnected(true);
                         Intent intent1 = new Intent();
                         intent1.setAction(CalibrationFragment.REFRESH_DEVICE_LIST_EVENT);
@@ -126,7 +126,7 @@ public class BluetoothLeService extends IntentService {
 
                 final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
                 for(Device d : Connection.listOfAllDevices){
-                    if(device.getAddress().equals(d.deviceAddress)){
+                    if(device.getAddress().equals(d.getAddress())){
                         d.setConnected(false);
                         Intent intent1 = new Intent();
                         intent1.setAction(CalibrationFragment.REFRESH_DEVICE_LIST_EVENT);
@@ -182,10 +182,13 @@ public class BluetoothLeService extends IntentService {
 
     public BluetoothLeService(){
         super("BluetoothLeService");
+        dataStorage = DataStorage.getInstance();
+
     }
 
     public BluetoothLeService(String name) {
         super(name);
+        dataStorage = DataStorage.getInstance();
     }
 
     //region _____broadcast update_____
@@ -202,6 +205,7 @@ public class BluetoothLeService extends IntentService {
             int heartRate = formatIncomingDataForHeartRate(characteristic);
             SoldierStatus.heartRate = heartRate;
             Log.i(TAG,"heartRate is: " + String.valueOf(heartRate) );
+            dataStorage.addHeartRateValue(heartRate);
             mainActivity.setHr(heartRate);
             StatusConnectionClock.resetTimerForHeartRate();
             if(SoldierStatus.isHeartRateActive == false)
@@ -219,10 +223,11 @@ public class BluetoothLeService extends IntentService {
             final int muscleRate = characteristic.getIntValue(format, 1);
 //            Log.i(TAG,"Muscle measured value is: " +  String.valueOf(muscleRate));
 
-            mainActivity.plotEMG.fillPlotValues(muscleRate);
+            EmgFragment.fillPlotValues(muscleRate);
             if(mainActivity.getEmgFragment()!=null){
                 mainActivity.getEmgFragment().refreshPlot();
             }
+
         }
         else
         {
@@ -434,28 +439,30 @@ public class BluetoothLeService extends IntentService {
     }
     //endregion
 
-    //region ______database functions_____
-    public void addEmgToDatabase(double f1, int size){
-        if(!isEmgDataWrittenToDataBase){
-            dbAdapter.insertEmg(f1);
-            emgRowCount++;
-            if(emgRowCount == size) {
-                isEmgDataWrittenToDataBase = true;
-                emgRowCount = 1;
-            }
-        }else{
-            dbAdapter.updateEmgTable(emgRowCount,f1);
-            emgRowCount++;
-            if(emgRowCount == size){
-                emgRowCount = 1;
-            }
-        }
-    }
-//endregion
+    //region ______DataStorage functions_____
 
-    public void setDbAdapter(DBAdapter dbAdapter) {
-        this.dbAdapter = dbAdapter;
+    private void addHeartRateToDataStorage(int heartRateValue){
+        dataStorage.addHeartRateValue(heartRateValue);
     }
+
+
+//    public void addEmgToDatabase(double f1, int size){
+//        if(!isEmgDataWrittenToDataBase){
+//            dbAdapter.insertEmg(f1);
+//            emgRowCount++;
+//            if(emgRowCount == size) {
+//                isEmgDataWrittenToDataBase = true;
+//                emgRowCount = 1;
+//            }
+//        }else{
+//            dbAdapter.updateEmgTable(emgRowCount,f1);
+//            emgRowCount++;
+//            if(emgRowCount == size){
+//                emgRowCount = 1;
+//            }
+//        }
+//    }
+//////endregion
     public List<BluetoothGattService> getSupportedGattServices() {
         if (mBluetoothGatt == null) return null;
 

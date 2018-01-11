@@ -27,25 +27,22 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     final static String TAG = MainActivity.class.getSimpleName();
-    private NavigationView navigationView;
+
     private MainViewBehaviour mainViewBehaviour;
-    private  DBAdapter dbAdapter;
-    EmgFragment emgFragment = null;
+    private DBAdapter dbAdapter;
+    private EmgFragment emgFragment = null;
+    private BluetoothManagement bluetoothManagement;
+    private Receivers receivers;
+    private DataStorage dataStorage;
 
-    public BluetoothManagement bluetoothManagement;
-    public PlotEMG plotEMG;
-
-    Toolbar toolbar;
-    public ImageView disableBluetoothIcon, hrView;
-    Button emgButton, triageButton;
-    TextView hrText, hrTextLabel;
-
-    Receivers receivers;
-
-    boolean isTriageScreenVisible = true;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+    private Button emgButton, triageButton;
+    private TextView hrText, hrTextLabel;
+    public  ImageView disableBluetoothIcon, hrView;
 
 
-
+    private boolean isTriageScreenVisible = true;
 
     //region _____init_____
     private void initViews(){
@@ -72,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         mainViewBehaviour = new MainViewBehaviour(this);
         mainViewBehaviour.start();
         bluetoothManagement = new BluetoothManagement(this);
-        plotEMG = new PlotEMG();
+        dataStorage = DataStorage.getInstance();
     }
 
     private void initAndHandleEmgButton(){
@@ -96,8 +93,8 @@ public class MainActivity extends AppCompatActivity
         receivers.registerReceivers();
     }
     private void initDataBase(){
-        dbAdapter = new DBAdapter(getApplicationContext());
-        dbAdapter.open();
+        dbAdapter = DBAdapter.getInstance();
+        dbAdapter.open(getApplicationContext());
     }
 
     //endregion
@@ -117,13 +114,11 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-
     @Override
     protected void onResume() {
         Log.i(TAG,"onResume");
         super.onResume();
-        dbAdapter.open();
+        dbAdapter.open(getApplicationContext());
         bluetoothManagement.printConnectRequest();
     }
 
@@ -140,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         manageDrawerBehaviourAndOnBackPressedFunctionForFragments();
     }
 
-    public void manageDrawerBehaviourAndOnBackPressedFunctionForFragments(){
+    private void manageDrawerBehaviourAndOnBackPressedFunctionForFragments(){
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -167,9 +162,9 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         receivers.unregisterReceivers();
-        unregisterReceiver(bluetoothManagement.connection.mReceiver);
-        bluetoothManagement.unbindCurrentService();
-        DBAdapter.deleteDataBase(getApplicationContext());
+        unregisterReceiver(bluetoothManagement.getConnection().getDeviceAndDiscoveryStatusReceiver());
+        bluetoothManagement.unbindCurrentWorkingService();
+        dbAdapter.deleteDataBase(getApplicationContext());
     }
 
     //endregion
@@ -197,7 +192,7 @@ public class MainActivity extends AppCompatActivity
                 replaceFragment(fragment, "CALIBRATION_FRAGMENT");
                 break;
             case R.id.nav_assesment:
-                new ManualAssesment(MainActivity.this);
+                new ManualAssessment(MainActivity.this);
                 break;
 
             case R.id.nav_alarm:
@@ -210,7 +205,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
     }
 
-    public void replaceFragment(Fragment fragment,String tag){
+    private void replaceFragment(Fragment fragment,String tag){
         if(fragment != null){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame,fragment,tag).addToBackStack(null);
@@ -226,10 +221,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
-
-
-//endregion
+    //endregion
 
     //region _____emg handle_____
     public void setEmgFragmentToNull(){
@@ -239,9 +231,6 @@ public class MainActivity extends AppCompatActivity
     public EmgFragment getEmgFragment(){
         return emgFragment;
     }
-
-
-
     //endregion
 
     //region _____activity and fragments handle_____
@@ -268,7 +257,6 @@ public class MainActivity extends AppCompatActivity
         setIsTriageScreenVisible(b);
         setBackgroundComponentVisibility(b);
     }
-
     public void setIsTriageScreenVisible(boolean b){
         isTriageScreenVisible = b;
     }
@@ -309,6 +297,8 @@ public class MainActivity extends AppCompatActivity
         });
     }
     //endregion_____
+
+
     public void setHr(int hr){
         final int HR = hr;
         runOnUiThread(new Runnable() {
@@ -328,7 +318,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public DBAdapter getDbAdapter() {
-        return dbAdapter;
+    public boolean isTriageScreenVisible() {
+        return isTriageScreenVisible;
     }
+
+    public BluetoothManagement getBluetoothManagement() {
+        return bluetoothManagement;
+    }
+
 }

@@ -9,6 +9,9 @@ import com.example.work.triageapp2.MainPackage.SoldierStatus;
 public class StatusConnectionClock extends Thread {
     private final static String TAG = StatusConnectionClock.class.getSimpleName();
     public static volatile int heartRateConnectionTimeInSeconds;
+    public static boolean isHeartRateActive = false;
+    private boolean running = true;
+
 
     public StatusConnectionClock(){
         heartRateConnectionTimeInSeconds = 0;
@@ -16,23 +19,18 @@ public class StatusConnectionClock extends Thread {
 
     @Override
     public void run() {
-
-        while(true){
-            setHeartRateStatusWithSecInterval();
+        while(running){
+            manageHeartRateStatus();
         }
-
     }
 
-
-    public void setHeartRateStatusWithSecInterval(){
+    private void manageHeartRateStatus(){
         if(SoldierStatus.isHeartRateActive)
             heartRateConnectionTimeInSeconds ++;
-
 
         if(heartRateConnectionTimeInSeconds == 20){
             SoldierStatus.isHeartRateActive = false;
             SoldierStatus.heartRate = 0;
-
         }
 
         try {

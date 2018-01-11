@@ -1,14 +1,14 @@
 package com.example.work.triageapp2.Database;
 
 /**
- * Created by BoryS on 29.10.2017.
+ * Created by BoryS on 10.01.2018.
  */
 
-public class Emg {
+public class HeartRate {
     private long id;
-    private double value;
+    private int value;
 
-    public Emg(long id, double value){
+    public HeartRate(long id, int value) {
         this.id = id;
         this.value = value;
     }
@@ -21,7 +21,7 @@ public class Emg {
         this.id = id;
     }
 
-    public double getValue() {
+    public int getValue() {
         return value;
     }
 

@@ -20,7 +20,6 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
-import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
 import com.example.work.triageapp2.R;
 
 import java.util.ArrayList;
@@ -33,10 +32,60 @@ import java.util.List;
 
 public class EmgFragment extends Fragment implements OnBackPressedListener, IfMainScreenCheck {
     private final static String TAG = EmgFragment.class.getSimpleName();
+    public static final int PLOT_SIZE = 300;
+    public static ArrayList<Float> plotValues = new ArrayList<Float>();
     private XYPlot plot;
 
-    public static class MyFadeFormatter extends AdvancedLineAndPointRenderer.Formatter {
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.emg_panel,container,false);
+    }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle("Emg Plot");
+        initPlot();
+        refreshPlot();
+
+    }
+
+    private void initPlot(){
+        plot = (XYPlot)getActivity().findViewById(R.id.plot);
+        MyFadeFormatter formatter =new MyFadeFormatter(2000);
+        formatter.setLegendIconEnabled(false);
+        plot.setPadding(0,0,0,0);
+        plot.setPlotMargins(0,0,0,0);
+        plot.getGraph().setSize(new Size(-10, SizeMode.FILL, 10, SizeMode.FILL));
+        plot.getGraph().position(10,HorizontalPositioning.ABSOLUTE_FROM_LEFT,35,VerticalPositioning.ABSOLUTE_FROM_TOP);
+        plot.setRangeBoundaries(0, 400, BoundaryMode.FIXED);
+        plot.setDomainBoundaries(0, EmgFragment.PLOT_SIZE, BoundaryMode.FIXED);
+        plot.setDomainStep(StepMode.INCREMENT_BY_VAL,100);
+        plot.setRangeStepValue(9);
+    }
+
+    public void refreshPlot(){
+        XYSeries series1 = new SimpleXYSeries(
+                plotValues, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
+        MyFadeFormatter formatter = new MyFadeFormatter(2000);
+        formatter.setLegendIconEnabled(false);
+        plot.clear();
+        plot.addSeries(series1, formatter);
+        plot.redraw();
+    }
+
+    @Override
+    public void onBackPressed() {
+        ((MainActivity) getActivity()).setEmgFragmentToNull();
+        setIfItIsMainScreen((MainActivity)getActivity(),true);
+        getActivity().getSupportFragmentManager().beginTransaction().
+                remove(getActivity().getSupportFragmentManager().findFragmentByTag("EMG_FRAGMENT")).commit();
+        getActivity().getSupportFragmentManager().popBackStackImmediate();
+
+    }
+
+    private static class MyFadeFormatter extends AdvancedLineAndPointRenderer.Formatter {
         private int trailSize;
 
         public MyFadeFormatter(int trailSize) {
@@ -60,69 +109,20 @@ public class EmgFragment extends Fragment implements OnBackPressedListener, IfMa
         }
     }
 
-    public void initPlot(){
-        plot = (XYPlot)getActivity().findViewById(R.id.plot);
-
-        MyFadeFormatter formatter =new MyFadeFormatter(2000);
-        formatter.setLegendIconEnabled(false);
-
-        plot.setPadding(0,0,0,0);
-        plot.setPlotMargins(0,0,0,0);
-
-//        plot.getGraph().setSize(new Size);
-        plot.getGraph().setSize(new Size(
-                -10, SizeMode.FILL,
-                10, SizeMode.FILL));
-        plot.getGraph().position(10,HorizontalPositioning.ABSOLUTE_FROM_LEFT,35,VerticalPositioning.ABSOLUTE_FROM_TOP);
-
-        plot.setRangeBoundaries(0, 400, BoundaryMode.FIXED);
-        plot.setDomainBoundaries(0, PlotEMG.PLOT_SIZE, BoundaryMode.FIXED);
-        plot.setDomainStep(StepMode.INCREMENT_BY_VAL,100);
-        plot.setRangeStepValue(9);
-        // reduce the number of range labels
-//        plot.setLinesPerRangeLabel(3);
-    }
-
     public static <T> List<T> rotate(List<T> aL, int shift) {
         List<T> newValues = new ArrayList<>(aL);
         Collections.rotate(newValues, shift);
         return newValues;
     }
 
-
-    public void refreshPlot(){
-        XYSeries series1 = new SimpleXYSeries(
-                ((MainActivity)getActivity()).plotEMG.getPlotList(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
-        MyFadeFormatter formatter =new MyFadeFormatter(2000);
-        formatter.setLegendIconEnabled(false);
-        plot.clear();
-        plot.addSeries(series1, formatter);
-        plot.redraw();
+    public static void fillPlotValues(float f1){
+        if(plotValues.size()<PLOT_SIZE)
+            plotValues.add(f1);
+        else {
+            plotValues.remove(0);
+            plotValues.add(f1);
+        }
     }
 
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.emg_panel,container,false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Emg Plot");
-        initPlot();
-        refreshPlot();
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        ((MainActivity) getActivity()).setEmgFragmentToNull();
-        setIfItIsMainScreen((MainActivity)getActivity(),true);
-        getActivity().getSupportFragmentManager().beginTransaction().
-                remove(getActivity().getSupportFragmentManager().findFragmentByTag("EMG_FRAGMENT")).commit();
-        getActivity().getSupportFragmentManager().popBackStackImmediate();
-
-    }
 }

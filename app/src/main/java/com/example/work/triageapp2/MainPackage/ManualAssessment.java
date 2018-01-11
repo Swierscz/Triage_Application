@@ -9,16 +9,16 @@ import android.content.DialogInterface;
  * Created by BoryS on 08.12.2017.
  */
 
-public class ManualAssesment {
-    private final static String TAG = ManualAssesment.class.getSimpleName();
+public class ManualAssessment {
+    private final static String TAG = ManualAssessment.class.getSimpleName();
     Context context;
 
-    public ManualAssesment(Context context) {
+    public ManualAssessment(Context context) {
         this.context = context;
-        assessSoldierCondition();
+        showSoldierAssessmentDialog();
     }
 
-    public Dialog onCreateDialogSingleChoice() {
+    private Dialog onCreateDialogSingleChoice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         CharSequence[] array = {"5", "4", "3","2","1"};
         builder.setTitle("Oceń swój stan zdrowia")
@@ -43,7 +43,7 @@ public class ManualAssesment {
         return builder.create();
     }
 
-    public void assessSoldierCondition(){
+    private void showSoldierAssessmentDialog(){
         Dialog dialog = onCreateDialogSingleChoice();
         dialog.show();
     }

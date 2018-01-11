@@ -1,20 +1,13 @@
 package com.example.work.triageapp2.MainPackage;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 import android.view.View;
 
 import com.example.work.triageapp2.Bluetooth.Ble.BluetoothLeService;
-import com.example.work.triageapp2.Bluetooth.Device;
-
-import java.lang.reflect.Method;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by BoryS on 22.10.2017.
@@ -26,6 +19,7 @@ public class Receivers {
 
     public Receivers(MainActivity mainActivity){
         this.mainActivity = mainActivity;
+        registerReceivers();
     }
     
 //MainActivity
@@ -46,17 +40,17 @@ public class Receivers {
     };
 
 //BleService
-    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mGattStatusReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                mainActivity.bluetoothManagement.isGattConnected = true;
+                mainActivity.getBluetoothManagement().setGattConnected(true);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                mainActivity.bluetoothManagement.isGattConnected = false;
+                mainActivity.getBluetoothManagement().setGattConnected(false);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
-                mainActivity.bluetoothManagement.displayGattServices(mainActivity.bluetoothManagement.mBluetoothLeService.getSupportedGattServices());
+                mainActivity.getBluetoothManagement().readCharacteristicsFromServices(mainActivity.getBluetoothManagement().getmBluetoothLeService().getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
               //  mainActivity.readAndNotifySelectedCharacteristic();
             }
@@ -80,12 +74,12 @@ public class Receivers {
     //region ______register and unregister receivers_____
     public void registerReceivers(){
         mainActivity.registerReceiver(bluetoothStateChangeReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
-        mainActivity.registerReceiver(mGattUpdateReceiver, createGATTIntentFilter());
+        mainActivity.registerReceiver(mGattStatusReceiver, createGATTIntentFilter());
     }
 
     public void unregisterReceivers(){
         mainActivity.unregisterReceiver(bluetoothStateChangeReceiver);
-        mainActivity.unregisterReceiver(mGattUpdateReceiver);
+        mainActivity.unregisterReceiver(mGattStatusReceiver);
     }
     //endregion
 

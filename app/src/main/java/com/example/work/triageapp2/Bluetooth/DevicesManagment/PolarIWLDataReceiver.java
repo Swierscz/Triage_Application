@@ -22,11 +22,11 @@ import static android.content.ContentValues.TAG;
  */
 
 public class PolarIWLDataReceiver extends Thread {
-    ClassicConnection classicConnection;
-    public byte[] mmBuffer; // mmBuffer store for the stream
-    public final BluetoothSocket mmSocket;
-    public final InputStream mmInStream;
-    public boolean running = true;
+    private ClassicConnection classicConnection;
+    private byte[] mmBuffer; // mmBuffer store for the stream
+    private final BluetoothSocket mmSocket;
+    private final InputStream mmInStream;
+    private boolean running = true;
 
     public PolarIWLDataReceiver(ClassicConnection classicConnection, BluetoothSocket mmSocket){
         this.classicConnection = classicConnection;
@@ -59,18 +59,7 @@ public class PolarIWLDataReceiver extends Thread {
         }
     }
 
-    public void setConnectedAndSendRefreshListEvent(){
-        for(Device d : Connection.listOfAllDevices) {
-            if (classicConnection.deviceAddress.equals(d.deviceAddress)) {
-                d.setConnected(false);
-                Intent intent1 = new Intent();
-                intent1.setAction(CalibrationFragment.REFRESH_DEVICE_LIST_EVENT);
-                classicConnection.connection.bluetoothManagement.getMainActivity().sendBroadcast(intent1);
-            }
-        }
-    }
-
-    public void readAndDecodeStreamData(int numBytes) throws IOException {
+    private void readAndDecodeStreamData(int numBytes) throws IOException {
         numBytes = mmInStream.read(mmBuffer);
 
         final StringBuilder sb = new StringBuilder();
@@ -86,28 +75,43 @@ public class PolarIWLDataReceiver extends Thread {
         }
     }
 
-    public void setStatusForHeartRate(){
+    private void setStatusForHeartRate(){
         SoldierStatus.heartRate = mmBuffer[4];
         if(String.valueOf(mmBuffer[4]).equals("0")){
             SoldierStatus.isHeartRateActive = false;
         }
         else{
-            classicConnection.connection.bluetoothManagement.getMainActivity().setHr(mmBuffer[4]);
+            classicConnection.getConnection().getBluetoothManagement().getMainActivity().setHr(mmBuffer[4]);
             StatusConnectionClock.resetTimerForHeartRate();
             if(SoldierStatus.isHeartRateActive == false)
                 SoldierStatus.isHeartRateActive = true;
         }
     }
 
-    public void setInputStream(){
-
+    private void setConnectedAndSendRefreshListEvent(){
+        for(Device d : Connection.listOfAllDevices) {
+            if (classicConnection.getDeviceAddress().equals(d.getAddress())) {
+                d.setConnected(false);
+                Intent intent1 = new Intent();
+                intent1.setAction(CalibrationFragment.REFRESH_DEVICE_LIST_EVENT);
+                classicConnection.getConnection().getBluetoothManagement().getMainActivity().sendBroadcast(intent1);
+            }
+        }
     }
 
-    public void close() {
+    private void close() {
         try {
             mmSocket.close();
         } catch (IOException e) {
             Log.e(TAG, "Could not close the connect socket", e);
         }
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 }

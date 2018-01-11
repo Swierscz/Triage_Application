@@ -30,27 +30,19 @@ import java.util.List;
 public class BluetoothManagement {
     final static String TAG = BluetoothManagement.class.getSimpleName();
 
-    public MainActivity getMainActivity() {
-        return mainActivity;
-    }
-
-    MainActivity mainActivity;
-    public Connection connection;
-
-
     public BluetoothAdapter mBluetoothAdapter;
-    public BluetoothLeService mBluetoothLeService;
-    ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
-    BluetoothGattCharacteristic mNotifyCharacteristic;
+    private MainActivity mainActivity;
+    private Connection connection;
+    private BluetoothLeService mBluetoothLeService;
 
-    public String mDeviceAddress;
-    public boolean isGattConnected;
+    private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+    private BluetoothGattCharacteristic mNotifyCharacteristic;
 
-    public ServiceConnection getmServiceConnection() {
-        return mServiceConnection;
-    }
+    private String mDeviceAddress;
+    private boolean isGattConnected;
 
-    public final ServiceConnection mServiceConnection = new ServiceConnection() {
+
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
@@ -61,7 +53,6 @@ public class BluetoothManagement {
             }
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothLeService.connect(mDeviceAddress);
-            mBluetoothLeService.setDbAdapter(mainActivity.getDbAdapter());
         }
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
@@ -74,23 +65,23 @@ public class BluetoothManagement {
         this.mainActivity = mainActivity;
 
         initBluetooth();
-        initDeviceClock();
+        startDeviceClock();
     }
 
     private void initBluetooth(){
 
-        setPermissionForBlueetoothUse();
+        setPermissionForBluetoothUse();
         setBluetoothAdapter();
         startBluetoothRequest();
         connection = new Connection(this ,mBluetoothAdapter);
 
     }
-    private void initDeviceClock(){
+    private void startDeviceClock(){
         StatusConnectionClock statusConnectionClock = new StatusConnectionClock();
         statusConnectionClock.start();
     }
 
-    private void setPermissionForBlueetoothUse() {
+    private void setPermissionForBluetoothUse() {
         int permissionCheck = ContextCompat.checkSelfPermission(mainActivity,
                 Manifest.permission.WRITE_CALENDAR);
         Log.e(TAG, "Permission Status: " + permissionCheck);
@@ -131,13 +122,11 @@ public class BluetoothManagement {
         return mBluetoothAdapter.isEnabled();
     }
 
-    public void displayGattServices(List<BluetoothGattService> gattServices) {
-        //     Log.i(TAG,"displayGattServices");
+    public void readCharacteristicsFromServices(List<BluetoothGattService> gattServices) {
         if (gattServices == null) return;
         mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
         // Loops through available GATT Services.
         for (BluetoothGattService gattService : gattServices) {
-
             List<BluetoothGattCharacteristic> gattCharacteristics =
                     gattService.getCharacteristics();
             ArrayList<BluetoothGattCharacteristic> charas =
@@ -147,26 +136,25 @@ public class BluetoothManagement {
                 charas.add(gattCharacteristic);
             }
             mGattCharacteristics.add(charas);
-            readAndNotifySelectedCharacteristic();
+            readAndNotifyCharacteristics();
         }
     }
 
-    public void readAndNotifySelectedCharacteristic(){
-        //    Log.i(TAG,"readAndNotifySelectedCharacteristic");
+    private void readAndNotifyCharacteristics(){
         if (mGattCharacteristics != null) {
             for(ArrayList<BluetoothGattCharacteristic> list : mGattCharacteristics){
                 for(BluetoothGattCharacteristic characteristic_temp : list){
                     if(characteristic_temp.getUuid().toString().equals(SampleGattAttributes.HEART_RATE_MEASUREMENT)){
-                        readAndNotifyCharacteristic(characteristic_temp);
+                        readAndNotifySelectedCharacteristic(characteristic_temp);
                     }else if(characteristic_temp.getUuid().toString().equals(SampleGattAttributes.MYOWARE_MUSCLE_SENSOR_CHARACTERISTIC)){
-                        readAndNotifyCharacteristic(characteristic_temp);
+                        readAndNotifySelectedCharacteristic(characteristic_temp);
                     }
                 }
             }
         }
     }
 
-    private void readAndNotifyCharacteristic(BluetoothGattCharacteristic characteristic_temp){
+    private void readAndNotifySelectedCharacteristic(BluetoothGattCharacteristic characteristic_temp){
         BluetoothGattCharacteristic characteristic = null;
         characteristic = characteristic_temp;
         if (characteristic != null) {
@@ -180,10 +168,7 @@ public class BluetoothManagement {
         }
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
-    public void unbindCurrentService(){mainActivity.unbindService(mServiceConnection);}
+    public void unbindCurrentWorkingService(){mainActivity.unbindService(mServiceConnection);}
 
     public void printConnectRequest() {
         if (mBluetoothLeService != null) {
@@ -191,4 +176,41 @@ public class BluetoothManagement {
             Log.d(TAG, "Connect request result=" + result);
         }
     }
+
+    public MainActivity getMainActivity() {
+        return mainActivity;
+    }
+
+    public BluetoothAdapter getmBluetoothAdapter() {
+        return mBluetoothAdapter;
+    }
+
+    public String getmDeviceAddress() {
+        return mDeviceAddress;
+    }
+
+    public boolean isGattConnected() {
+        return isGattConnected;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setGattConnected(boolean gattConnected) {
+        isGattConnected = gattConnected;
+    }
+
+    public BluetoothLeService getmBluetoothLeService() {
+        return mBluetoothLeService;
+    }
+
+    public void setmDeviceAddress(String mDeviceAddress) {
+        this.mDeviceAddress = mDeviceAddress;
+    }
+
+    public ServiceConnection getmServiceConnection() {
+        return mServiceConnection;
+    }
+
 }

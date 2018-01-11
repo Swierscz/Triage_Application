@@ -22,14 +22,14 @@ import static android.content.ContentValues.TAG;
 public class ClassicConnection extends Thread {
     public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
     private final static String TAG = ClassicConnection.class.getSimpleName();
-    ClassicConnectionManager classicConnectionManager;
-    public Connection connection;
-    BluetoothAdapter mBluetoothAdapter;
-    BluetoothSocket mmSocket;
-    BluetoothDevice mmDevice;
+    private ClassicConnectionManager classicConnectionManager;
+    private  Connection connection;
+    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothSocket mmSocket;
+    private BluetoothDevice mmDevice;
 
-    String deviceName;
-    public String deviceAddress;
+    private String deviceName;
+    private String deviceAddress;
 
 
 
@@ -47,7 +47,7 @@ public class ClassicConnection extends Thread {
         connectSocket();
     }
 
-    public void setDevice(){
+    private void setDevice(){
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
         if(pairedDevices.size() > 0){
             for(BluetoothDevice device : pairedDevices){
@@ -59,7 +59,7 @@ public class ClassicConnection extends Thread {
         }
     }
 
-    public void connectSocket(){
+    private void connectSocket(){
         try {
             mmSocket = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
         } catch (IOException e) {
@@ -81,7 +81,7 @@ public class ClassicConnection extends Thread {
             mmSocket.connect();
 
             for(Device device : Connection.listOfAllDevices){
-                if(device.deviceAddress.equals(mmDevice.getAddress())){
+                if(device.getAddress().equals(mmDevice.getAddress())){
                     device.setConnected(true);
                 }
             }
@@ -106,9 +106,9 @@ public class ClassicConnection extends Thread {
 
     public void closeSocket(){
         try {
-            classicConnectionManager.polarIWLDataReceiver.running = false;
+            classicConnectionManager.getPolarIWLDataReceiver().setRunning(false);
             for(Device device : Connection.listOfAllDevices){
-                if(device.deviceAddress.equals(mmDevice.getAddress())){
+                if(device.getAddress().equals(mmDevice.getAddress())){
                     device.setConnected(false);
                 }
             }
@@ -120,4 +120,23 @@ public class ClassicConnection extends Thread {
         }
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public String getDeviceAddress() {
+        return deviceAddress;
+    }
+
+    public void setDeviceAddress(String deviceAddress) {
+        this.deviceAddress = deviceAddress;
+    }
 }
