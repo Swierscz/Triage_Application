@@ -20,7 +20,6 @@ public class LoginPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
-        launchMainActivity();
         getSupportActionBar().hide();
 
         confirmButton = (Button)findViewById(R.id.confirmButtonMP);
@@ -48,5 +47,6 @@ public class LoginPageActivity extends AppCompatActivity {
     private void launchMainActivity(){
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }

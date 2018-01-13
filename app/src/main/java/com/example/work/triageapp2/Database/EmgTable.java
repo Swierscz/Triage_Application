@@ -13,11 +13,16 @@ public class EmgTable {
     public static final String EMG_VALUE = "heart_rate";
     public static final String EMG_OPTIONS = "REAL DEFAULT 0";
     public static final int EMG_VALUE_COLUMN = 1;
+    public static final String DATE_TIME = "date_time";
+    public static final String DATE_TIME_OPTIONS = "DATETIME DEFAULT CURRENT_TIMESTAMP";
+    public static final int DATE_TIME_COLUMN = 2;
+
 
     public static final String DB_CREATE_MUSCLE_TABLE =
             "CREATE TABLE " + EMG_TABLE + "( " +
                     KEY_ID + " " + ID_OPTIONS + ", " +
                     EMG_VALUE + " " + EMG_OPTIONS +
+                    DATE_TIME + " " + DATE_TIME_OPTIONS +
                     ");";
     public static final String DROP_EMG_TABLE =
             "DROP TABLE IF EXISTS " + EMG_TABLE;

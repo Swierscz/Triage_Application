@@ -13,4 +13,5 @@
     <color name="gradientColor">#0f9b0f</color>
     <color name="gradientColorII">#3CA55C</color>
     <color name="gradientColorIII">#B5AC49</color>
+    <color name="borderColor">#B7B6B6</color>
 </resources>

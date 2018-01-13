@@ -40,8 +40,6 @@ import com.example.work.triageapp2.MainPackage.DataStorage;
 import com.example.work.triageapp2.MainPackage.EmgFragment;
 import com.example.work.triageapp2.MainPackage.MainActivity;
 import com.example.work.triageapp2.Bluetooth.StatusConnectionClock;
-import com.example.work.triageapp2.Database.DBAdapter;
-import com.example.work.triageapp2.MainPackage.SoldierStatus;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -203,13 +201,13 @@ public class BluetoothLeService extends IntentService {
         final Intent intent = new Intent(action);
         if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
             int heartRate = formatIncomingDataForHeartRate(characteristic);
-            SoldierStatus.heartRate = heartRate;
+            dataStorage.setCurrentHeartRate(heartRate);
             Log.i(TAG,"heartRate is: " + String.valueOf(heartRate) );
             dataStorage.addHeartRateValue(heartRate);
             mainActivity.setHr(heartRate);
             StatusConnectionClock.resetTimerForHeartRate();
-            if(SoldierStatus.isHeartRateActive == false)
-                SoldierStatus.isHeartRateActive = true;
+            if(StatusConnectionClock.isHeartRateActive == false)
+                StatusConnectionClock.isHeartRateActive = true;
         }
         else if(UUID_MYOWARE_MUSCLE_MEASURMENT.equals(characteristic.getUuid())){
 
@@ -221,13 +219,10 @@ public class BluetoothLeService extends IntentService {
                 format = BluetoothGattCharacteristic.FORMAT_UINT8;
             }
             final int muscleRate = characteristic.getIntValue(format, 1);
-//            Log.i(TAG,"Muscle measured value is: " +  String.valueOf(muscleRate));
-
             EmgFragment.fillPlotValues(muscleRate);
             if(mainActivity.getEmgFragment()!=null){
                 mainActivity.getEmgFragment().refreshPlot();
             }
-
         }
         else
         {
@@ -237,12 +232,6 @@ public class BluetoothLeService extends IntentService {
 
         sendBroadcast(intent);
     }
-    //endregion
-//            float f1 = formatIncomingDataForMuscleDevice(characteristic);
-    //            Log.i(TAG,"Muscle measured value is: " +  String.valueOf(muscleRate));
-//            addEmgToDatabase(f1,200);
-//            final Intent intent2 = new Intent("EMG_RECEIVED");
-//            getApplicationContext().sendBroadcast(intent2);
 
 
     //region _____standard service functions_____
@@ -439,11 +428,7 @@ public class BluetoothLeService extends IntentService {
     }
     //endregion
 
-    //region ______DataStorage functions_____
-
-    private void addHeartRateToDataStorage(int heartRateValue){
-        dataStorage.addHeartRateValue(heartRateValue);
-    }
+    //region ______DataStorage functions_____s
 
 
 //    public void addEmgToDatabase(double f1, int size){

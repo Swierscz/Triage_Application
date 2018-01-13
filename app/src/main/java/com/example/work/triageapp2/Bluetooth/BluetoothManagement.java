@@ -74,6 +74,7 @@ public class BluetoothManagement {
         setBluetoothAdapter();
         startBluetoothRequest();
         connection = new Connection(this ,mBluetoothAdapter);
+        getmBluetoothAdapter().startDiscovery();
 
     }
     private void startDeviceClock(){
@@ -89,12 +90,11 @@ public class BluetoothManagement {
         if (ContextCompat.checkSelfPermission(mainActivity.getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(mainActivity,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(mainActivity, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             } else {
                 ActivityCompat.requestPermissions(mainActivity,
                         new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        mainActivity.getResources().getInteger(R.integer.MY_PERMISSIONS_REQUEST_LOCATION));
+                        mainActivity.getResources().getInteger(R.integer.MY_PERMISSIONS_LOCATION));
             }
         }
     }
@@ -113,8 +113,6 @@ public class BluetoothManagement {
             Log.i(TAG,"request enable bluetooth has started");
         }
     }
-
-
 
 
     public boolean isBluetoothEnabled() {

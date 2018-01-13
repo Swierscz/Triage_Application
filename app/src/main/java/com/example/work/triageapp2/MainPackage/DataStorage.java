@@ -1,6 +1,7 @@
 package com.example.work.triageapp2.MainPackage;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.work.triageapp2.Database.DBAdapter;
 
@@ -11,8 +12,13 @@ import java.util.ArrayList;
  */
 
 public class DataStorage {
+    private static final String TAG = DataStorage.class.getName();
     private static DataStorage INSTANCE;
     private DBAdapter dbAdapter;
+
+    private TriageCategory currentTriageCategory = TriageCategory.T1;
+    private TriageCategory[] triageCategoriesHistory = new TriageCategory[10];
+
     private int currentHeartRate;
     private ArrayList<Integer> heartRateData = new ArrayList<Integer>();
 
@@ -38,7 +44,7 @@ public class DataStorage {
     }
 
     public ArrayList<Integer> getHrData(){
-        ArrayList<Integer> temp = heartRateData;
+        ArrayList<Integer> temp = new ArrayList<Integer>(heartRateData);
         insertCollectedHrDataToDataBase(temp);
         heartRateData.clear();
         return temp;
@@ -53,6 +59,7 @@ public class DataStorage {
                 }
             }
         });
+        thread.start();
     }
 
     public int getCurrentHeartRate() {
@@ -61,5 +68,26 @@ public class DataStorage {
 
     public void setCurrentHeartRate(int currentHeartRate) {
         this.currentHeartRate = currentHeartRate;
+    }
+
+    public TriageCategory getCurrentTriageCategory() {
+        return currentTriageCategory;
+    }
+
+    public void setCurrentTriageCategory(TriageCategory currentTriageCategory) {
+        this.currentTriageCategory = currentTriageCategory;
+    }
+
+    public TriageCategory[] getTriageCategoriesHistory() {
+        return triageCategoriesHistory;
+    }
+
+    public void addCategoryToHistory(TriageCategory triageCategory){
+        TriageCategory temp = triageCategory;
+        for(int i = 0; i<10; i++ ){
+            TriageCategory lastCat = triageCategoriesHistory[i];
+            triageCategoriesHistory[i] = temp;
+            temp = lastCat;
+        }
     }
 }

@@ -11,10 +11,10 @@
 
 
     <android.support.constraint.ConstraintLayout
-        android:background="@drawable/main_gradient"
         android:id="@+id/content_frame"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@drawable/main_gradient"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -24,11 +24,10 @@
         tools:ignore="RtlHardcoded">
 
 
-
         <Button
             android:id="@+id/triageButton"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="130dp"
             android:background="@color/t1Color"
             android:text="T1 - Immediate Treatment"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +42,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/triageButton"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
             app:srcCompat="@drawable/green_heart_rate_disabled" />
 
         <TextView
@@ -52,13 +51,11 @@
             android:layout_height="25dp"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
             android:text="Heart rate is: "
             android:textColor="@android:color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/hrView"
-            app:layout_constraintStart_toEndOf="@+id/hrView"
-            app:layout_constraintTop_toBottomOf="@+id/triageButton" />
+            app:layout_constraintStart_toEndOf="@+id/hrView" />
 
         <TextView
             android:id="@+id/hrTextView"
@@ -80,6 +77,128 @@
             android:text="EMG"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/borderColor"
+            android:orientation="horizontal"
+            android:paddingBottom="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/triageButton">
+
+            <Button
+                android:id="@+id/triageHistoryButton10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+
+            <Button
+                android:id="@+id/triageHistoryButton9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+
+            <Button
+                android:id="@+id/triageHistoryButton8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+
+            <Button
+                android:id="@+id/triageHistoryButton7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+
+            <Button
+                android:id="@+id/triageHistoryButton6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+
+            <Button
+                android:id="@+id/triageHistoryButton5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+
+            <Button
+                android:id="@+id/triageHistoryButton4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+
+            <Button
+                android:id="@+id/triageHistoryButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+
+            <Button
+                android:id="@+id/triageHistoryButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+
+            <Button
+                android:id="@+id/triageHistoryButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@color/ap_gray" />
+        </LinearLayout>
 
 
     </android.support.constraint.ConstraintLayout>

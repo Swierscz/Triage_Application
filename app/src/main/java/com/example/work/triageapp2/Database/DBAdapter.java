@@ -24,8 +24,8 @@ public class DBAdapter {
         return dbFile.exists();
     }
 
-    public EmgDAOImpl emgDataBase = new EmgDAOImpl(db);
-    public HeartRateDAOImpl heartRateDataBase = new HeartRateDAOImpl(db);
+    public EmgDAOImpl emgDataBase;
+    public HeartRateDAOImpl heartRateDataBase;
 
 
     private DBAdapter(){
@@ -52,6 +52,8 @@ public class DBAdapter {
         }catch(SQLException e){
             db = dbHelper.getReadableDatabase();
         }
+        emgDataBase = new EmgDAOImpl(db);
+        heartRateDataBase  = new HeartRateDAOImpl(db);
         return this;
     }
 

@@ -1,5 +1,9 @@
 package com.example.work.triageapp2.MainPackage;
 
+import android.util.Log;
+
+import com.example.work.triageapp2.Bluetooth.StatusConnectionClock;
+
 import java.util.ArrayList;
 
 /**
@@ -7,9 +11,9 @@ import java.util.ArrayList;
  */
 
 public class Triage extends Thread{
-    TriageCategory triageCategory = TriageCategory.T1;
-    DataStorage dataStorage;
-    boolean running = true;
+    private final static String TAG = Triage.class.getSimpleName();
+    private DataStorage dataStorage;
+    private boolean running = true;
 
     public Triage(){
         dataStorage = DataStorage.getInstance();
@@ -17,10 +21,13 @@ public class Triage extends Thread{
 
     @Override
     public void run() {
+        TriageCategory currentCategory;
         while(running){
-           assessTriageCategory();
+            currentCategory = assessTriageCategory();
+            dataStorage.setCurrentTriageCategory(currentCategory);
+            dataStorage.addCategoryToHistory(currentCategory);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(20000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -32,11 +39,14 @@ public class Triage extends Thread{
         TriageCategory triageCategory = TriageCategory.T1;
         int averageHeartRate = getAverageHeartRate(dataStorage.getHrData());
 
-        if(averageHeartRate < 65 && averageHeartRate>30) triageCategory = TriageCategory.T1;
+        if(!StatusConnectionClock.isHeartRateActive){
+            triageCategory = TriageCategory.NOT_DEFINED;
+        }
+        else if(averageHeartRate < 65 && averageHeartRate>30) triageCategory = TriageCategory.T1;
         else if(averageHeartRate < 75 && averageHeartRate > 30) triageCategory = TriageCategory.T2;
         else if (averageHeartRate < 85 && averageHeartRate > 30) triageCategory = TriageCategory.T3;
         else triageCategory = TriageCategory.T4;
-
+        Log.i(TAG, "Kategoria: " + triageCategory);
         return triageCategory;
     }
 
@@ -45,7 +55,10 @@ public class Triage extends Thread{
         for(Integer value : heartRateValues){
             temp+=value;
         }
-        return temp/heartRateValues.size();
+        if(heartRateValues.size()!=0)
+            Log.i(TAG,"" + temp/heartRateValues.size());
+        if(heartRateValues.size()!=0)
+            return temp/heartRateValues.size();
+        else return 0;
     }
-
 }

@@ -1,7 +1,10 @@
 package com.example.work.triageapp2.MainPackage;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -34,13 +37,14 @@ public class MainActivity extends AppCompatActivity
     private BluetoothManagement bluetoothManagement;
     private Receivers receivers;
     private DataStorage dataStorage;
+    private Triage triage;
 
     private Toolbar toolbar;
     private NavigationView navigationView;
-    private Button emgButton, triageButton;
+    private Button emgButton, triageView;
     private TextView hrText, hrTextLabel;
+    private Button[] triageHistoryViewItems = new Button[10];
     public  ImageView disableBluetoothIcon, hrView;
-
 
     private boolean isTriageScreenVisible = true;
 
@@ -62,7 +66,20 @@ public class MainActivity extends AppCompatActivity
         hrView = (ImageView) findViewById(R.id.hrView);
         hrText = (TextView) findViewById(R.id.hrTextView);
         hrTextLabel = (TextView) findViewById(R.id.hrTextViewLabel);
-        triageButton = (Button) findViewById(R.id.triageButton);
+        triageView = (Button) findViewById(R.id.triageButton);
+
+        triageHistoryViewItems[0] = (Button) findViewById(R.id.triageHistoryButton1);
+        triageHistoryViewItems[1] = (Button) findViewById(R.id.triageHistoryButton2);
+        triageHistoryViewItems[2] = (Button) findViewById(R.id.triageHistoryButton3);
+        triageHistoryViewItems[3] = (Button) findViewById(R.id.triageHistoryButton4);
+        triageHistoryViewItems[4] = (Button) findViewById(R.id.triageHistoryButton5);
+        triageHistoryViewItems[5] = (Button) findViewById(R.id.triageHistoryButton6);
+        triageHistoryViewItems[6] = (Button) findViewById(R.id.triageHistoryButton7);
+        triageHistoryViewItems[7] = (Button) findViewById(R.id.triageHistoryButton8);
+        triageHistoryViewItems[8] = (Button) findViewById(R.id.triageHistoryButton9);
+        triageHistoryViewItems[9] = (Button) findViewById(R.id.triageHistoryButton10);
+
+
     }
 
     private void initComponents(){
@@ -70,6 +87,8 @@ public class MainActivity extends AppCompatActivity
         mainViewBehaviour.start();
         bluetoothManagement = new BluetoothManagement(this);
         dataStorage = DataStorage.getInstance();
+        triage = new Triage();
+        triage.start();
     }
 
     private void initAndHandleEmgButton(){
@@ -106,10 +125,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         initViews();
+        initDataBase();
         initComponents();
         initAndHandleEmgButton();
         initReceivers();
-        initDataBase();
         setBluetoothIconVisibility();
 
     }
@@ -223,6 +242,33 @@ public class MainActivity extends AppCompatActivity
 
     //endregion
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == getResources().getInteger(R.integer.REQUEST_ENABLE_BT)){
+            if(!bluetoothManagement.getmBluetoothAdapter().isDiscovering())
+                 bluetoothManagement.getmBluetoothAdapter().startDiscovery();
+            else {
+                bluetoothManagement.getmBluetoothAdapter().cancelDiscovery();
+                bluetoothManagement.getmBluetoothAdapter().startDiscovery();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == getResources().getInteger(R.integer.MY_PERMISSIONS_LOCATION)){
+
+                if(!bluetoothManagement.getmBluetoothAdapter().isDiscovering())
+                    bluetoothManagement.getmBluetoothAdapter().startDiscovery();
+                else {
+                    bluetoothManagement.getmBluetoothAdapter().cancelDiscovery();
+                    bluetoothManagement.getmBluetoothAdapter().startDiscovery();
+                }
+        }
+    }
+
     //region _____emg handle_____
     public void setEmgFragmentToNull(){
         emgFragment = null;
@@ -241,14 +287,20 @@ public class MainActivity extends AppCompatActivity
                 hrView.setVisibility(View.VISIBLE);
                 hrText.setVisibility(View.VISIBLE);
                 hrTextLabel.setVisibility(View.VISIBLE);
-                triageButton.setVisibility(View.VISIBLE);
+                triageView.setVisibility(View.VISIBLE);
+                for(Button b : triageHistoryViewItems){
+                    b.setVisibility(View.VISIBLE);
+                }
             }
             else{
                 emgButton.setVisibility(View.GONE);
                 hrView.setVisibility(View.GONE);
                 hrText.setVisibility(View.GONE);
                 hrTextLabel.setVisibility(View.GONE);
-                triageButton.setVisibility(View.GONE);
+                triageView.setVisibility(View.GONE);
+                for(Button b : triageHistoryViewItems){
+                    b.setVisibility(View.GONE);
+                }
             }
 
         }
@@ -263,11 +315,79 @@ public class MainActivity extends AppCompatActivity
 
     //endregion
 
-    //region _____hrView_____
+
+    public void refreshHistoryImages(TriageCategory[] tab){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TriageCategory temp;
+                for(int i=0; i<10; i++){
+                    temp = tab[i];
+                    if(temp!=null) {
+                        switch (temp) {
+                            case T1:
+                                triageHistoryViewItems[i].setBackgroundColor(getResources().getColor(R.color.t1Color));
+                                break;
+                            case T2:
+                                triageHistoryViewItems[i].setBackgroundColor(getResources().getColor(R.color.t2Color));
+                                break;
+                            case T3:
+                                triageHistoryViewItems[i].setBackgroundColor(getResources().getColor(R.color.t3Color));
+                                break;
+                            case T4:
+                                triageHistoryViewItems[i].setBackgroundColor(getResources().getColor(R.color.t4Color));
+                                break;
+                            case NOT_DEFINED:
+                                triageHistoryViewItems[i].setBackgroundColor(R.drawable.not_defined_background);
+                                break;
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    public void setTriageImage(TriageCategory triageCategory)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                triageView.setTextColor(Color.BLACK);
+                switch(triageCategory){
+                    case T1:
+                        triageView.setBackgroundColor(getResources().getColor(R.color.t1Color));
+                        triageView.setText("T1 - Immediate Treatment");
+                        break;
+                    case T2:
+                        triageView.setBackgroundColor(getResources().getColor(R.color.t2Color));
+                        triageView.setText("T2 - Delayed Treatment");
+                        break;
+                    case T3:
+                        triageView.setBackgroundColor(getResources().getColor(R.color.t3Color));
+                        triageView.setText("T3 - Minimal Treatment");
+                        break;
+                    case T4:
+                        triageView.setTextColor(Color.WHITE);
+                        triageView.setBackgroundColor(getResources().getColor(R.color.t4Color));
+                        triageView.setText("T4 - Expectant Treatment");
+                        break;
+                    case NOT_DEFINED:
+                        triageView.setText("Triage category is not defined");
+                        triageView.setBackgroundColor(R.drawable.not_defined_background);
+                        break;
+
+                }
+            }
+        });
+    }
+
+
+
+
     public ImageView getHrView(){
         return hrView;
     }
-
 
     public void setIsHrViewHasWholeHeartImage(boolean b){
         final boolean tempBool=b;
@@ -296,7 +416,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-    //endregion_____
 
 
     public void setHr(int hr){
@@ -326,4 +445,7 @@ public class MainActivity extends AppCompatActivity
         return bluetoothManagement;
     }
 
+    public DataStorage getDataStorage() {
+        return dataStorage;
+    }
 }

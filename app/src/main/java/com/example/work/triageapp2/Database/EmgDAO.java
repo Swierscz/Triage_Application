@@ -7,6 +7,6 @@ import java.util.ArrayList;
  */
 
 public interface EmgDAO {
-    void insertEmg(double emg);
+    void insertEmg(double emgValue);
     ArrayList<Double> getAllEmgs();
 }

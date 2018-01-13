@@ -1,6 +1,6 @@
 package com.example.work.triageapp2.Bluetooth;
 
-import com.example.work.triageapp2.MainPackage.SoldierStatus;
+import com.example.work.triageapp2.MainPackage.DataStorage;
 
 /**
  * Created by BoryS on 26.10.2017.
@@ -25,12 +25,12 @@ public class StatusConnectionClock extends Thread {
     }
 
     private void manageHeartRateStatus(){
-        if(SoldierStatus.isHeartRateActive)
+        if(isHeartRateActive)
             heartRateConnectionTimeInSeconds ++;
 
         if(heartRateConnectionTimeInSeconds == 20){
-            SoldierStatus.isHeartRateActive = false;
-            SoldierStatus.heartRate = 0;
+            isHeartRateActive = false;
+            DataStorage.getInstance().setCurrentHeartRate(0);
         }
 
         try {

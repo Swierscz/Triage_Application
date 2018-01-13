@@ -18,9 +18,9 @@ public class EmgDAOImpl implements EmgDAO {
     }
 
     @Override
-    public void insertEmg(double emg) {
+    public void insertEmg(double emgValue) {
         ContentValues newEmgValues = new ContentValues();
-        newEmgValues.put(EmgTable.EMG_VALUE, emg);
+        newEmgValues.put(EmgTable.EMG_VALUE, emgValue);
         db.insert(EmgTable.EMG_TABLE,null,newEmgValues);
     }
 

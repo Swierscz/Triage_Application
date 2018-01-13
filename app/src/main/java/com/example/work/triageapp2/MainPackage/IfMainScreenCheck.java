@@ -7,6 +7,6 @@ import com.example.work.triageapp2.MainPackage.MainActivity;
  */
 
 public interface IfMainScreenCheck {
-    public default void setIfItIsMainScreen(MainActivity mA, boolean b){   mA.setIfItIsMainScreen(b);  }
+    default void setIfItIsMainScreen(MainActivity mA, boolean b){   mA.setIfItIsMainScreen(b);  }
 
 }

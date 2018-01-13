@@ -44,7 +44,7 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(REFRESH_DEVICE_LIST_EVENT)) {
-                refreshDeviceList();
+                setListAdapter();
             }
         }
     };
@@ -68,7 +68,7 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
         listOfDevices = (ListView) getActivity().findViewById(R.id.bluetoothDevicesList);
         ((MainActivity) getActivity()).registerReceiver(listRefreshReceiver, new IntentFilter(REFRESH_DEVICE_LIST_EVENT));
         setHasOptionsMenu(true);
-        refreshDeviceList();
+        setListAdapter();
         setListenerForDeviceList();
     }
 
@@ -90,7 +90,7 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
     }
 
     private void setListenerForDeviceList() {
-        refreshDeviceList();
+        setListAdapter();
 
         listOfDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -102,7 +102,7 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
         });
     }
 
-    private void refreshDeviceList(){
+    private void setListAdapter(){
         setPairingStatusByBondedDevicesList();
         setListAdapter(connection.listOfAllDevices);
     }
@@ -154,12 +154,12 @@ public class CalibrationFragment extends Fragment implements OnBackPressedListen
     private void connectOrDisconnectWithLEDevice(Device dC){
         if (dC.isConnected()) {
             ((MainActivity) getActivity()).getBluetoothManagement().getmBluetoothLeService().disconnect(dC.getAddress());
-            refreshDeviceList();
+            setListAdapter();
 //          ((MainActivity) getActivity()).unbindService(((MainActivity) getActivity()).getBluetoothManagement().mServiceConnection);
         } else {
 //          ((MainActivity) getActivity()).getBluetoothManagement().connection.bindLEService(dC);
             ((MainActivity) getActivity()).getBluetoothManagement().getmBluetoothLeService().connect(dC.getAddress());
-            refreshDeviceList();
+            setListAdapter();
         }
     }
 
