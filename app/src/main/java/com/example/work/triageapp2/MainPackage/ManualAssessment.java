@@ -21,7 +21,7 @@ public class ManualAssessment {
     private Dialog onCreateDialogSingleChoice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         CharSequence[] array = {"5", "4", "3","2","1"};
-        builder.setTitle("Oceń swój stan zdrowia")
+        builder.setTitle("Evaluate your health")
                 .setSingleChoiceItems(array, 1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

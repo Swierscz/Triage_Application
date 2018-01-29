@@ -1,10 +1,12 @@
 package com.example.work.triageapp2.MainPackage;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,7 +19,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.work.triageapp2.Database.DBAdapter;
@@ -41,9 +45,12 @@ public class MainActivity extends AppCompatActivity
 
     private Toolbar toolbar;
     private NavigationView navigationView;
-    private Button emgButton, triageView;
-    private TextView hrText, hrTextLabel;
+    private Button  triageView;
+    private ImageButton emgButton;
+    private TextView hrText;
+    private LinearLayout triageHistoryContainer;
     private Button[] triageHistoryViewItems = new Button[10];
+    private View line1,line2;
     public  ImageView disableBluetoothIcon, hrView;
 
     private boolean isTriageScreenVisible = true;
@@ -65,9 +72,13 @@ public class MainActivity extends AppCompatActivity
 
         hrView = (ImageView) findViewById(R.id.hrView);
         hrText = (TextView) findViewById(R.id.hrTextView);
-        hrTextLabel = (TextView) findViewById(R.id.hrTextViewLabel);
         triageView = (Button) findViewById(R.id.triageButton);
+        triageView.setTextColor(Color.WHITE);
 
+        line1 = (View) findViewById(R.id.line);
+        line2 = (View) findViewById(R.id.line2);
+
+        triageHistoryContainer = (LinearLayout) findViewById(R.id.triageHistoryContainer);
         triageHistoryViewItems[0] = (Button) findViewById(R.id.triageHistoryButton1);
         triageHistoryViewItems[1] = (Button) findViewById(R.id.triageHistoryButton2);
         triageHistoryViewItems[2] = (Button) findViewById(R.id.triageHistoryButton3);
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initAndHandleEmgButton(){
-        emgButton = (Button) findViewById(R.id.emgButton);
+        emgButton = (ImageButton) findViewById(R.id.emgButton);
         emgButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -180,8 +191,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        receivers.unregisterReceivers();
         unregisterReceiver(bluetoothManagement.getConnection().getDeviceAndDiscoveryStatusReceiver());
+        receivers.unregisterReceivers();
         bluetoothManagement.unbindCurrentWorkingService();
         dbAdapter.deleteDataBase(getApplicationContext());
     }
@@ -286,21 +297,21 @@ public class MainActivity extends AppCompatActivity
                 emgButton.setVisibility(View.VISIBLE);
                 hrView.setVisibility(View.VISIBLE);
                 hrText.setVisibility(View.VISIBLE);
-                hrTextLabel.setVisibility(View.VISIBLE);
                 triageView.setVisibility(View.VISIBLE);
-                for(Button b : triageHistoryViewItems){
-                    b.setVisibility(View.VISIBLE);
-                }
+                triageHistoryContainer.setVisibility(View.VISIBLE);
+                line1.setVisibility(View.VISIBLE);
+                line2.setVisibility(View.VISIBLE);
+
             }
             else{
                 emgButton.setVisibility(View.GONE);
                 hrView.setVisibility(View.GONE);
                 hrText.setVisibility(View.GONE);
-                hrTextLabel.setVisibility(View.GONE);
                 triageView.setVisibility(View.GONE);
-                for(Button b : triageHistoryViewItems){
-                    b.setVisibility(View.GONE);
-                }
+                triageHistoryContainer.setVisibility(View.GONE);
+                line1.setVisibility(View.GONE);
+                line2.setVisibility(View.GONE);
+
             }
 
         }
@@ -353,7 +364,6 @@ public class MainActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                triageView.setTextColor(Color.BLACK);
                 switch(triageCategory){
                     case T1:
                         triageView.setBackgroundColor(getResources().getColor(R.color.t1Color));
@@ -368,7 +378,6 @@ public class MainActivity extends AppCompatActivity
                         triageView.setText("T3 - Minimal Treatment");
                         break;
                     case T4:
-                        triageView.setTextColor(Color.WHITE);
                         triageView.setBackgroundColor(getResources().getColor(R.color.t4Color));
                         triageView.setText("T4 - Expectant Treatment");
                         break;
@@ -435,6 +444,10 @@ public class MainActivity extends AppCompatActivity
         }else{
             disableBluetoothIcon.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public TextView getHrText() {
+        return hrText;
     }
 
     public boolean isTriageScreenVisible() {

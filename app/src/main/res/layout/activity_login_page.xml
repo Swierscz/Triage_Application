@@ -4,18 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_gradient"
+    android:background="@drawable/background_gradient"
     tools:context="com.example.work.triageapp2.MainPackage.LoginPageActivity">
     <!--android:theme="@style/AppTheme.NoActionBar"-->
 
 
     <EditText
+
         android:id="@+id/userNameEditText"
+        android:theme="@style/EditTextAccent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:textColor="@color/off_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,13 +26,13 @@
 
     <EditText
         android:id="@+id/passwordEditText"
+        android:theme="@style/EditTextAccent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPassword"
+        android:textColor="@color/off_white"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="@+id/userNameEditText"
         app:layout_constraintRight_toRightOf="@+id/userNameEditText"
@@ -41,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
         android:text="User Name:"
-        android:textColor="@android:color/black"
+        android:textColor="@color/off_white"
         android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/userNameEditText"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -50,9 +53,8 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
         android:text="Password:"
-        android:textColor="@android:color/black"
+        android:textColor="@color/off_white"
         android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/passwordEditText"
         app:layout_constraintLeft_toLeftOf="@+id/textView" />
@@ -65,6 +67,7 @@
         android:layout_marginStart="8dp"
         android:background="@android:drawable/divider_horizontal_textfield"
         android:text="Confirm"
+        android:textColor="@color/off_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +81,7 @@
         android:layout_margin="0dp"
         android:layout_marginTop="32dp"
         android:padding="0dp"
-        android:src="@drawable/heart"
+        android:src="@drawable/white_heart"
         app:civ_border_color="#FF000000"
         app:civ_border_width="0dp"
         app:layout_constraintBottom_toTopOf="@+id/userNameEditText"

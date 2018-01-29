@@ -55,7 +55,7 @@ public class DataStorage {
             @Override
             public void run() {
                 for(Integer value : temp){
-                    dbAdapter.heartRateDataBase.insertHeartRate(value);
+//                    dbAdapter.heartRateDataBase.insertHeartRate(value);
                 }
             }
         });

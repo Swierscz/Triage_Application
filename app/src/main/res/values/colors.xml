@@ -10,8 +10,10 @@
     <color name="t2Color">#956c1d</color>
     <color name="t3Color">#304319</color>
     <color name="t4Color">#000000</color>
-    <color name="gradientColor">#0f9b0f</color>
-    <color name="gradientColorII">#3CA55C</color>
+    <color name="gradientColor">#21321b</color>
+    <color name="gradientColorII">#254618</color>
     <color name="gradientColorIII">#B5AC49</color>
-    <color name="borderColor">#B7B6B6</color>
+    <color name="borderColor">#b7b6b6</color>
+    <color name="menuColor">#FF13420D</color>
+    <color name="accent">#71FC62</color>
 </resources>

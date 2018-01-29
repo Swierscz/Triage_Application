@@ -7,7 +7,6 @@ import android.content.Context;
  */
 
 public class HeartRateTable {
-    public static DBAdapter INSTANCE;
     public static final String HEARTRATE_TABLE = "HEARTRATE_TABLE";
     public static final String KEY_ID = "id";
     public static final String ID_OPTIONS = "INTEGER PRIMARY KEY AUTOINCREMENT";
@@ -21,8 +20,8 @@ public class HeartRateTable {
 
     public static final String DB_CREATE_HEARTRATE_TABLE =
             "CREATE TABLE " + HEARTRATE_TABLE + "( " +
-                   KEY_ID + " " + ID_OPTIONS + ", " +
-                    HEARTRATE_VALUE + " " + HEARTRATE_VALUE_OPTIONS +
+                   KEY_ID + " " + ID_OPTIONS + ", "  +
+                    HEARTRATE_VALUE + " " + HEARTRATE_VALUE_OPTIONS + ", " +
                     DATE_TIME + " " + DATE_TIME_OPTIONS +
                     ");";
     public static final String DROP_HEARTRATE_TABLE =

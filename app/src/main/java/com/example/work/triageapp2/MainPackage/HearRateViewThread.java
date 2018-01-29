@@ -1,8 +1,11 @@
 package com.example.work.triageapp2.MainPackage;
 
+import android.util.Log;
 import android.view.View;
 
 import com.example.work.triageapp2.Bluetooth.StatusConnectionClock;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by BoryS on 11.01.2018.
@@ -29,22 +32,39 @@ public class HearRateViewThread extends Thread {
         if(mainViewBehaviour.getMainActivity().isTriageScreenVisible()) {
             if (StatusConnectionClock.isHeartRateActive) {
                 if (!isHrIconEnabled) {
-                    mainViewBehaviour.getMainActivity().setIsHrViewHasWholeHeartImage(true);
-                    isHrIconEnabled = true;
+                    mainViewBehaviour.getMainActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mainViewBehaviour.getMainActivity().setIsHrViewHasWholeHeartImage(true);
+                            isHrIconEnabled = true;
+                        }
+                    });
                 }
 
                 simulateHeartRateBeep();
 
             } else {
                 if (isHrIconEnabled) {
-                    mainViewBehaviour.getMainActivity().setIsHrViewShouldBeVisible(true);
-                    mainViewBehaviour.getMainActivity().setIsHrViewHasWholeHeartImage(false);
-                    isHrIconEnabled = false;
-                    mainViewBehaviour.getMainActivity().setHr(0);
+                    mainViewBehaviour.getMainActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mainViewBehaviour.getMainActivity().setIsHrViewShouldBeVisible(true);
+                            mainViewBehaviour.getMainActivity().setIsHrViewHasWholeHeartImage(false);
+                            isHrIconEnabled = false;
+                            mainViewBehaviour.getMainActivity().setHr(0);
+                            mainViewBehaviour.getMainActivity().getHrText().setVisibility(View.GONE);
+                        }
+                    });
                 }
             }
         }else if(mainViewBehaviour.getMainActivity().getHrView().getVisibility() == View.VISIBLE){
-            mainViewBehaviour.getMainActivity().setIsHrViewShouldBeVisible(false);
+            mainViewBehaviour.getMainActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mainViewBehaviour.getMainActivity().setIsHrViewShouldBeVisible(false);
+                    mainViewBehaviour.getMainActivity().getHrText().setVisibility(View.GONE);
+                }
+            });
         }
     }
 
@@ -70,11 +90,17 @@ public class HearRateViewThread extends Thread {
     }
 
     private void simulateSingleBeep(){
-        if (mainViewBehaviour.getMainActivity().getHrView().getVisibility()== View.VISIBLE) {
-            mainViewBehaviour.getMainActivity().setIsHrViewShouldBeVisible(false);
-        } else {
-            mainViewBehaviour.getMainActivity().setIsHrViewShouldBeVisible(true);
-        }
+        mainViewBehaviour.getMainActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mainViewBehaviour.getMainActivity().getHrView().getVisibility()== View.VISIBLE) {
+                    mainViewBehaviour.getMainActivity().getHrText().setVisibility(View.GONE);
+                    mainViewBehaviour.getMainActivity().setIsHrViewShouldBeVisible(false);
+                } else {
+                    mainViewBehaviour.getMainActivity().setIsHrViewShouldBeVisible(true);
+                    mainViewBehaviour.getMainActivity().getHrText().setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
-
 }

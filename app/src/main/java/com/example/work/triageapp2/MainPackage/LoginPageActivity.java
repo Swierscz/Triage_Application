@@ -20,7 +20,7 @@ public class LoginPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
 
         confirmButton = (Button)findViewById(R.id.confirmButtonMP);
         userNameEditText = (EditText) findViewById(R.id.userNameEditText);
@@ -35,8 +35,8 @@ public class LoginPageActivity extends AppCompatActivity {
     }
 
     private void checkInputCorrectness(){
-        if(userNameEditText.getText().toString().equals("")&&
-                passwordEditText.getText().toString().equals("")) {
+        if(userNameEditText.getText().toString().equals("jakub")&&
+                passwordEditText.getText().toString().equals("jakub")) {
             Toast.makeText(getApplicationContext(),"Confirmed",Toast.LENGTH_SHORT).show();
             launchMainActivity();
         }else{

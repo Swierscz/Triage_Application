@@ -109,7 +109,6 @@ public class BluetoothLeService extends IntentService {
                         Intent intent1 = new Intent();
                         intent1.setAction(CalibrationFragment.REFRESH_DEVICE_LIST_EVENT);
                         mainActivity.sendBroadcast(intent1);
-                        Log.i(TAG,"");
                     }
                 }
 

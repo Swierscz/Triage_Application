@@ -55,7 +55,7 @@ public class Connection {
         if(!bluetoothManagement.mBluetoothAdapter.isDiscovering()) {
             bluetoothManagement.mBluetoothAdapter.startDiscovery();
         }
-
+        Log.i(TAG,"poszło");
         deviceAndDiscoveryStatusReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
@@ -82,7 +82,7 @@ public class Connection {
                     setUnpairedIfDeviceLostBond(device,state,prevState);
                     sendListRefreshEvent();
                 }
-
+        Log.i(TAG,"doszło");
             }
         };
 
@@ -171,6 +171,7 @@ public class Connection {
     }
 
     public void checkDeviceKindAndLaunchResponsibleThread(Device device){
+        Log.i(TAG,"aa");
         if(device.getKind().equals(TYPE_CLASSIC)){
             createClassicConnection(device);
         }else if(device.getKind().equals(TYPE_DUAL)){
@@ -189,7 +190,7 @@ public class Connection {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        classicConnection = new ClassicConnection(this,mBluetoothAdapter, device.getName(), device.getName());
+        classicConnection = new ClassicConnection(this,mBluetoothAdapter, device.getName(), device.getAddress());
         classicConnection.start();
     }
 

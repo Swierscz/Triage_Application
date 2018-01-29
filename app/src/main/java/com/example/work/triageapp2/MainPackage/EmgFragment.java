@@ -1,6 +1,8 @@
 package com.example.work.triageapp2.MainPackage;
 
 
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,10 +16,13 @@ import com.androidplot.ui.HorizontalPositioning;
 import com.androidplot.ui.Size;
 import com.androidplot.ui.SizeMode;
 import com.androidplot.ui.VerticalPositioning;
+import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.AdvancedLineAndPointRenderer;
 import com.androidplot.xy.BoundaryMode;
+import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.StepMode;
+import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.example.work.triageapp2.R;
@@ -54,15 +59,18 @@ public class EmgFragment extends Fragment implements OnBackPressedListener, IfMa
     private void initPlot(){
         plot = (XYPlot)getActivity().findViewById(R.id.plot);
         MyFadeFormatter formatter =new MyFadeFormatter(2000);
+
         formatter.setLegendIconEnabled(false);
         plot.setPadding(0,0,0,0);
         plot.setPlotMargins(0,0,0,0);
-        plot.getGraph().setSize(new Size(-10, SizeMode.FILL, 10, SizeMode.FILL));
-        plot.getGraph().position(10,HorizontalPositioning.ABSOLUTE_FROM_LEFT,35,VerticalPositioning.ABSOLUTE_FROM_TOP);
-        plot.setRangeBoundaries(0, 400, BoundaryMode.FIXED);
+        plot.getGraph().setSize(new Size(-50, SizeMode.FILL, 20, SizeMode.FILL));
+        plot.getGraph().position(7,HorizontalPositioning.ABSOLUTE_FROM_LEFT,0,VerticalPositioning.ABSOLUTE_FROM_TOP);
+        plot.setRangeBoundaries(0, 300, BoundaryMode.FIXED);
         plot.setDomainBoundaries(0, EmgFragment.PLOT_SIZE, BoundaryMode.FIXED);
         plot.setDomainStep(StepMode.INCREMENT_BY_VAL,100);
-        plot.setRangeStepValue(9);
+        plot.setRangeStepValue(7);
+        plot.getGraph().setLineLabelRenderer(XYGraphWidget.Edge.LEFT,new MyLineLabelRenderer2());
+        plot.getGraph().setLineLabelRenderer(XYGraphWidget.Edge.BOTTOM,new MyLineLabelRenderer1());
     }
 
     public void refreshPlot(){
@@ -70,6 +78,7 @@ public class EmgFragment extends Fragment implements OnBackPressedListener, IfMa
                 plotValues, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
         MyFadeFormatter formatter = new MyFadeFormatter(2000);
         formatter.setLegendIconEnabled(false);
+
         plot.clear();
         plot.addSeries(series1, formatter);
         plot.redraw();
@@ -124,5 +133,43 @@ public class EmgFragment extends Fragment implements OnBackPressedListener, IfMa
         }
     }
 
+    class MyLineLabelRenderer1 extends XYGraphWidget.LineLabelRenderer {
+
+        @Override
+        protected void drawLabel(Canvas canvas, String text, Paint paint,
+                                 float x, float y, boolean isOrigin) {
+//            if(isOrigin) {
+                // make the origin labels red:
+
+
+                final Paint originPaint = new Paint(paint);
+                originPaint.setColor(Color.RED);
+                originPaint.setTextSize(20);
+                super.drawLabel(canvas, text, originPaint, x, y , isOrigin);
+//            } else {
+//                super.drawLabel(canvas, text, paint, x, y , isOrigin);
+//            }
+        }
+    }
+
+    class MyLineLabelRenderer2 extends XYGraphWidget.LineLabelRenderer {
+
+        @Override
+        protected void drawLabel(Canvas canvas, String text, Paint paint,
+                                 float x, float y, boolean isOrigin) {
+            if(isOrigin) {
+
+            final Paint originPaint = new Paint(paint);
+            originPaint.setColor(Color.RED);
+            originPaint.setTextSize(0);
+            super.drawLabel(canvas, text, originPaint, x, y , isOrigin);
+            } else {
+                final Paint originPaint = new Paint(paint);
+                originPaint.setColor(Color.RED);
+                originPaint.setTextSize(20);
+                super.drawLabel(canvas, text, originPaint, x, y , isOrigin);
+            }
+        }
+    }
 
 }

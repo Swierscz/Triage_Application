@@ -42,8 +42,8 @@ public class DeviceConnectionClock extends Thread {
                             connection.sendListRefreshEvent();
                         }
                         if(device.getKind().equals(Connection.TYPE_CLASSIC)){
-                            connection.getBluetoothManagement().getConnection().createClassicConnection(device);
-                            connection.sendListRefreshEvent();
+//                            connection.getBluetoothManagement().getConnection().createClassicConnection(device);
+//                            connection.sendListRefreshEvent();
                         }
                     }
                 }

@@ -166,7 +166,8 @@ public class BluetoothManagement {
         }
     }
 
-    public void unbindCurrentWorkingService(){mainActivity.unbindService(mServiceConnection);}
+    public void unbindCurrentWorkingService(){
+         mainActivity.unbindService(mServiceConnection);}
 
     public void printConnectRequest() {
         if (mBluetoothLeService != null) {

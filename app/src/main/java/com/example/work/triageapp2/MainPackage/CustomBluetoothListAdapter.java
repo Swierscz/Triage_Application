@@ -1,6 +1,7 @@
 package com.example.work.triageapp2.MainPackage;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ public class CustomBluetoothListAdapter extends ArrayAdapter {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.listBluetoothTitleTextView);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         TextView extratxt = (TextView) rowView.findViewById(R.id.listBluetoothExtrasTextView);
+        txtTitle.setTextColor(Color.WHITE);
+        extratxt.setTextColor(Color.WHITE);
 
         txtTitle.setText(devices[position].getName());
         if(!devices[position].isFound()){

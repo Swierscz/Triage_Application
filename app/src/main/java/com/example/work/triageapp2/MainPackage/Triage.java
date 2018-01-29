@@ -36,7 +36,7 @@ public class Triage extends Thread{
 
 
     private TriageCategory assessTriageCategory(){
-        TriageCategory triageCategory = TriageCategory.T1;
+        TriageCategory triageCategory = TriageCategory.NOT_DEFINED;
         int averageHeartRate = getAverageHeartRate(dataStorage.getHrData());
 
         if(!StatusConnectionClock.isHeartRateActive){
