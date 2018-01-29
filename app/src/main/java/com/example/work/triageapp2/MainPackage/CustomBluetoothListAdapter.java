@@ -23,14 +23,14 @@ public class CustomBluetoothListAdapter extends ArrayAdapter {
     private Integer imgid;
 
     public CustomBluetoothListAdapter(Activity context,Device[] devices) {
-        super(context,R.layout.my_list,devices);
+        super(context,R.layout.list_of_devices,devices);
         this.devices = devices;
         this.context=context;
     }
 
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.my_list, null,true);
+        View rowView=inflater.inflate(R.layout.list_of_devices, null,true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.listBluetoothTitleTextView);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);

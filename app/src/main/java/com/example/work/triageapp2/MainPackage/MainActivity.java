@@ -1,12 +1,10 @@
 package com.example.work.triageapp2.MainPackage;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -349,7 +347,7 @@ public class MainActivity extends AppCompatActivity
                                 triageHistoryViewItems[i].setBackgroundColor(getResources().getColor(R.color.t4Color));
                                 break;
                             case NOT_DEFINED:
-                                triageHistoryViewItems[i].setBackgroundColor(R.drawable.not_defined_background);
+                                triageHistoryViewItems[i].setBackgroundColor(R.drawable.gradient_t5_category);
                                 break;
                         }
                     }
@@ -383,7 +381,7 @@ public class MainActivity extends AppCompatActivity
                         break;
                     case NOT_DEFINED:
                         triageView.setText("Triage category is not defined");
-                        triageView.setBackgroundColor(R.drawable.not_defined_background);
+                        triageView.setBackgroundColor(R.drawable.gradient_t5_category);
                         break;
 
                 }
@@ -404,9 +402,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run () {
                 if(tempBool){
-                    hrView.setImageResource(R.drawable.green_heart_hr);
+                    hrView.setImageResource(R.drawable.heart_green);
                 }else{
-                    hrView.setImageResource(R.drawable.green_heart_rate_disabled);
+                    hrView.setImageResource(R.drawable.heart_grey);
                 }
             }
         });

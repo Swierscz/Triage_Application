@@ -10,7 +10,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar_main"
+        layout="@layout/app_bar"
         android:layout_width="100dp"
         android:layout_height="100dp" />
 
@@ -19,14 +19,14 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@drawable/main_gradient"
+        android:background="@drawable/gradient_sidebar"
         android:choiceMode="none"
         android:fitsSystemWindows="true"
         android:paddingTop="?attr/actionBarSize"
         app:itemTextColor="@color/ap_white"
         app:elevation="0dp"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer"
+        app:headerLayout="@layout/sidebar_menu_header"
+        app:menu="@menu/sidebar_menu"
 
         >
 

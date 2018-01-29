@@ -23,10 +23,10 @@ public class Device {
         this.name = name;
         this.address = address;
         this.kind = kind;
-        notFoundImage = R.drawable.not_found_icon;
+        notFoundImage = R.drawable.icon_not_found;
         connectedImage = R.mipmap.ok_icon;
         disconnectedImage = R.mipmap.no_icon;
-        nonPairedImage = R.drawable.not_paired_icon;
+        nonPairedImage = R.drawable.icon_not_paired;
     }
 
     public String getName() {
